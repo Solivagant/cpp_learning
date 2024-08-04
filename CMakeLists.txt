@@ -20,6 +20,7 @@ add_executable(cpp_learning src/main.cpp
         src/SampleMain.cpp
 )
 
+# Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows
 target_link_libraries(cpp_learning "-framework CoreVideo")
 target_link_libraries(cpp_learning "-framework IOKit")
 target_link_libraries(cpp_learning "-framework Cocoa")
