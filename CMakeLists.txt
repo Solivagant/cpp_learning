@@ -27,3 +27,8 @@ target_link_libraries(cpp_learning "-framework Cocoa")
 target_link_libraries(cpp_learning "-framework GLUT")
 target_link_libraries(cpp_learning "-framework OpenGL")
 target_link_libraries(cpp_learning ${CMAKE_CURRENT_SOURCE_DIR}/lib/libraylib.a)
+
+add_custom_target(copy_assets
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets
+)
+add_dependencies(cpp_learning copy_assets)

@@ -16,12 +16,17 @@ void RunGame() {
     InitWindow(screenWidth, screenHeight, "Simple Raylib Game");
 
     // Load background texture
-    Texture2D background = LoadTexture("background.png");
+    Texture2D background = LoadTexture("assets/background.png");
 
     // Define the player character
     Vector2 playerPosition = {(float) screenWidth / 2, (float) screenHeight / 2};
     float playerSpeed = 200.0f;
     SetTargetFPS(60);  // Set our game to run at 60 frames-per-second
+
+    //Center background in window
+    Vector2 backgroundCenter = Vector2{(float)background.width / 2, (float)background.height / 2};
+    Vector2 screenCenter = Vector2{(float)screenWidth / 2, (float)screenHeight / 2};
+    Vector2 distance = Vector2Subtract(backgroundCenter, screenCenter);
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -39,7 +44,7 @@ void RunGame() {
         ClearBackground(RAYWHITE);
 
         // Draw the background
-        DrawTexture(background, 0, 0, WHITE);
+        DrawTexture(background, -distance.x, -distance.y, WHITE);
 
         // Draw the player character (a simple circle)
         DrawCircleV(playerPosition, 25, BLUE);
