@@ -3,8 +3,6 @@
 //
 
 #include "Video.h"
-namespace VHS {
     Video::Video(int id, std::string title, std::string genre) : videoId(id), videoTitle(title), videoGenre(genre) {}
 
     int Video::getVideoId() const { return videoId; }
-}

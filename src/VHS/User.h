@@ -5,7 +5,6 @@
 
 #ifndef CPP_LEARNING_USER_H
 #define CPP_LEARNING_USER_H
-namespace VHS {
     class User {
     public:
         User(int id, std::string name);
@@ -16,5 +15,4 @@ namespace VHS {
         int userId;
         std::string userName;
     };
-}
 #endif //CPP_LEARNING_USER_H

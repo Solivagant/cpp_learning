@@ -1,24 +1,19 @@
-#include "StdSample.h"
-#include "VideoClub/VideoClub.h"
 #include <iostream>
-
-using namespace std;
+#include "StdSample.h"
+#include "VHS/VideoClub.h"
 
 void IterateArray();
-
 void CoutTests();
-
 void DoubleArrowOperator();
-
 void RunVideoClub();
 
-int main() {
+//int main() {
 //    CoutTests();
-    IterateArray();
-    DoubleArrowOperator();
-    RunVideoClub();
-    return 0;
-}
+//    IterateArray();
+//    DoubleArrowOperator();
+//    RunVideoClub();
+//    return 0;
+//}
 
 void RunVideoClub() {
     VideoClub club;
@@ -48,37 +43,30 @@ void RunVideoClub() {
 
 void DoubleArrowOperator() {
     int numbers[10];
-
     for (int i = 0; i < 10; ++i) {
         numbers[i] = 10 >> 1;
     }
-
     for (int number: numbers) {
-        std::cout << number << endl;
+        std::cout << number << std::endl;
     }
 }
 
 void CoutTests() {
     StdSample sample(10);
-
     StdSample *samplePointer = &sample;
     sample.CoutWithFlush();
     sample.CoutNoFlush();
-
     samplePointer->CoutNoFlush();
 }
 
 void IterateArray() {
     int numbers[10];
-
     for (int i = 0; i < 10; ++i) {
         numbers[i] = i;
     }
-
     for (int number: numbers) {
         std::cout << number;
     }
-
-    cout << endl;
+    std::cout << std::endl;
 
 }

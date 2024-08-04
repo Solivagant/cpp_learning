@@ -9,7 +9,6 @@
 #ifndef CPP_LEARNING_VIDEO_H
 #define CPP_LEARNING_VIDEO_H
 
-namespace VHS {
     class Video {
     public:
         Video(int id, std::string title, std::string genre);
@@ -24,6 +23,5 @@ namespace VHS {
         std::string videoTitle;
         std::string videoGenre;
     };
-}
 
 #endif //CPP_LEARNING_VIDEO_H

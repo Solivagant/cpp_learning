@@ -3,7 +3,6 @@
 //
 #include "Rental.h"
 
-namespace VHS {
     Rental::Rental(int id, const User &user, const Video &video) : rentalId(id), rentingUser(user),
                                                                    rentedVideo(video) {}
 
@@ -12,4 +11,3 @@ namespace VHS {
     User Rental::getRentingUser() const { return rentingUser; }
 
     Video Rental::getRentedVideo() const { return rentedVideo; }
-}
