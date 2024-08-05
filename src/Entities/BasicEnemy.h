@@ -5,14 +5,16 @@
 #ifndef CPP_LEARNING_BASICENEMY_H
 #define CPP_LEARNING_BASICENEMY_H
 
-#include "IEntity.h"
+#include "AEntity.h"
 #include "EntityResolver.h"
 
-class BasicEnemy : IEntity {
+class BasicEnemy : public AEntity {
 public:
     BasicEnemy(EntityResolver* resolver, Vector2 initialPosition);
     void Draw() override;
     void Move(float deltaTime) override;
+private:
+    EntityResolver *entityResolver;
 };
 
 #endif //CPP_LEARNING_BASICENEMY_H

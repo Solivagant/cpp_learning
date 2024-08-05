@@ -18,6 +18,7 @@ private:
     int screenWidth;
     int screenHeight;
     void DrawEnemies();
+    void MoveEnemies(float d);
 };
 
 #endif //CPP_LEARNING_GAMELOOP_H

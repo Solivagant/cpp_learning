@@ -24,7 +24,7 @@ add_executable(cpp_learning src/main.cpp
         src/Game/MathUtil.h
         src/Entities/Player.cpp
         src/Entities/Player.h
-        src/Entities/IEntity.h
+        src/Entities/AEntity.h
         src/Entities/BasicEnemy.cpp
         src/Entities/BasicEnemy.h
         src/Entities/EntityResolver.cpp

@@ -8,5 +8,6 @@
 #include "../../lib/raymath.h"
 
 Vector2 CalculateCenter(Vector2 vectorA, Vector2 vectorB);
+Vector2 NormalizeVector(Vector2 vector);
 
 #endif //CPP_LEARNING_MATHUTIL_H

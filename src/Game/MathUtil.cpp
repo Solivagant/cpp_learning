@@ -10,3 +10,10 @@ Vector2 CalculateCenter(Vector2 vectorA, Vector2 vectorB) {
     auto vectorBHalf = Vector2{vectorB.x / 2, vectorB.y / 2};
     return Vector2Subtract(vectorAHalf, vectorBHalf);
 }
+
+
+Vector2 NormalizeVector(Vector2 vector) {
+    float mag = Vector2Length(vector);
+    return Vector2{vector.x / mag, vector.y / mag};
+}
+

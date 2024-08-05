@@ -37,6 +37,7 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
         // Update
         float deltaTime = GetFrameTime();
         entityResolver.GetPlayer()->Move(deltaTime);
+        MoveEnemies(deltaTime);
 
         // Draw
         BeginDrawing();
@@ -59,6 +60,12 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
     CloseWindow(); // Close window and OpenGL context
 
     return 0;
+}
+
+void GameLoop::MoveEnemies(float deltaTime) {
+    for (BasicEnemy* enemy: entityResolver.GetEnemies()) {
+        enemy->Move(deltaTime);
+    }
 }
 
 void GameLoop::DrawEnemies() {

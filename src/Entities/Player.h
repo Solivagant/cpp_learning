@@ -6,9 +6,10 @@
 #define CPP_LEARNING_PLAYER_H
 
 #include "../../lib/raylib.h"
-#include "IEntity.h"
+#include "AEntity.h"
 
-class Player : IEntity {
+// Inheritance is private here by default, so specify public
+class Player : public AEntity {
 public:
     Player(Vector2 initialPosition);
     void Move(float deltaTime) override;
