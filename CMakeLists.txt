@@ -22,6 +22,8 @@ add_executable(cpp_learning src/main.cpp
         src/Game/GameLoop.h
         src/Game/MathUtil.cpp
         src/Game/MathUtil.h
+        src/Game/Player.cpp
+        src/Game/Player.h
 )
 
 # Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows
