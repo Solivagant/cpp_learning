@@ -3,7 +3,9 @@
 //
 #include "GameLoop.h"
 #include "MathUtil.h"
-#include "Player.h"
+#include "../Entities/Player.h"
+#include "../Entities/BasicEnemy.h"
+#include "../Entities/EntityResolver.h"
 
 int GameLoop::RunGame(int screenWidth, int screenHeight) {
     this->screenWidth = screenWidth;
@@ -12,7 +14,6 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
 
     // Load background texture
     Texture2D background = LoadTexture("assets/background.png");
-
 
     SetTargetFPS(60);  // Set our game to run at 60 frames-per-second
 
@@ -23,12 +24,19 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
     // Define the player character
     Player player({(float) screenWidth / 2, (float) screenHeight / 2});
 
+    entityResolver.RegisterPlayer(&player);
+
+    BasicEnemy basicEnemy1(&entityResolver, Vector2 {(float) screenWidth / 2, 0});
+    BasicEnemy basicEnemy2(&entityResolver, Vector2 {(float) screenWidth / 2, (float)screenHeight});
+
+    entityResolver.RegisterEnemy(&basicEnemy1);
+    entityResolver.RegisterEnemy(&basicEnemy2);
+
     // Main game loop
     while (!WindowShouldClose()) {
         // Update
         float deltaTime = GetFrameTime();
-
-        player.DoMovement(deltaTime);
+        entityResolver.GetPlayer()->Move(deltaTime);
 
         // Draw
         BeginDrawing();
@@ -36,8 +44,9 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
 
         // Draw the background
         DrawTexture(background, -(int)distance.x, -(int)distance.y, WHITE);
+        entityResolver.GetPlayer()->Draw();
 
-        player.DoDraw();
+        DrawEnemies();
         EndDrawing();
     }
 
@@ -50,4 +59,10 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
     CloseWindow(); // Close window and OpenGL context
 
     return 0;
+}
+
+void GameLoop::DrawEnemies() {
+    for (BasicEnemy* enemy: entityResolver.GetEnemies()) {
+        enemy->Draw();
+    }
 }

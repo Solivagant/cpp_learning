@@ -22,8 +22,13 @@ add_executable(cpp_learning src/main.cpp
         src/Game/GameLoop.h
         src/Game/MathUtil.cpp
         src/Game/MathUtil.h
-        src/Game/Player.cpp
-        src/Game/Player.h
+        src/Entities/Player.cpp
+        src/Entities/Player.h
+        src/Entities/IEntity.h
+        src/Entities/BasicEnemy.cpp
+        src/Entities/BasicEnemy.h
+        src/Entities/EntityResolver.cpp
+        src/Entities/EntityResolver.h
 )
 
 # Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows

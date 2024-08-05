@@ -7,14 +7,17 @@
 
 #include "../../lib/raylib.h"
 #include "../../lib/raymath.h"
+#include "../Entities/EntityResolver.h"
 
 class GameLoop {
 public:
     int RunGame(int screenWidth, int screenHeight);
 
 private:
+    EntityResolver entityResolver;
     int screenWidth;
     int screenHeight;
+    void DrawEnemies();
 };
 
 #endif //CPP_LEARNING_GAMELOOP_H

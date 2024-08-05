@@ -6,15 +6,13 @@
 #define CPP_LEARNING_PLAYER_H
 
 #include "../../lib/raylib.h"
+#include "IEntity.h"
 
-class Player {
+class Player : IEntity {
 public:
     Player(Vector2 initialPosition);
-    void DoMovement(float deltaTime);
-    void DoDraw();
-private:
-    Vector2 playerPosition;
-    float playerSpeed;
+    void Move(float deltaTime) override;
+    void Draw() override;
 };
 
 #endif //CPP_LEARNING_PLAYER_H
