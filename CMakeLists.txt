@@ -18,6 +18,10 @@ add_executable(cpp_learning src/main.cpp
         lib/raylib.h
         lib/raymath.h
         src/SampleMain.cpp
+        src/Game/GameLoop.cpp
+        src/Game/GameLoop.h
+        src/Game/MathUtil.cpp
+        src/Game/MathUtil.h
 )
 
 # Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows
