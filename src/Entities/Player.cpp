@@ -2,19 +2,19 @@
 // Created by Geraldo Nascimento on 05/08/2024.
 //
 
+#include "../../lib/raylib.h"
 #include "Player.h"
 
 static const float maxHoldTime = 1.5;
 static const float speedBoost = 1.0f;
+static const float timePerFire = 0.25f;
 
 Player::Player(Vector2 initialPosition) {
-    // Define the player character
     position = initialPosition;
-    speed = 200.0f;
+    speed = InitialSpeed;
 }
 
 void Player::Move(float deltaTime) {
-
     // Move player with arrow keys
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
         position.x += speed * deltaTime;
@@ -41,16 +41,32 @@ void Player::Move(float deltaTime) {
         IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) ||
         IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
         timeMoveHeld = 0;
-        speed = 200;
+        speed = InitialSpeed;
     }
 
     if(timeMoveHeld > 0 && timeMoveHeld < maxHoldTime)
     {
         speed += speedBoost;
     }
-
 }
 
 void Player::Draw() {
-    DrawCircleV(position, 25, BLUE);
+    DrawCircleV(position, Radius, GREEN);
+}
+
+bool Player::Fire(float deltaTime) {
+    timeToFire += deltaTime;
+    if(IsMouseButtonDown(0))
+    {
+        if(timeToFire > timePerFire)
+        {
+            timeToFire = 0;
+            return true;
+        }
+    }
+    return false;
+}
+
+Vector2 Player::GetFirePosition() {
+    return GetMousePosition();
 }

@@ -8,6 +8,7 @@
 #include <vector>
 #include "Player.h"
 #include "BasicEnemy.h"
+#include "Projectile.h"
 
 // Forward declaration of BasicEnemy
 
@@ -17,11 +18,16 @@ public:
     void RegisterEnemy(BasicEnemy* enemy);
     Player* GetPlayer();
     std::vector<BasicEnemy*> GetEnemies();
+    std::vector<Projectile *> GetProjectiles();
     void DeleteEnemies();
+    void CleanEnemies();
+    void CleanProjectiles();
 
     void DeletePlayer();
+    void RegisterProjectile(Projectile *projectile);
 private:
     std::vector<BasicEnemy*> enemies;
+    std::vector<Projectile*> projectiles;
     Player* player;
 };
 

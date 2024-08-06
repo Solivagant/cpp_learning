@@ -22,6 +22,8 @@ private:
     void GenerateEnemies(int i);
     void RegisterPlayer();
     void FreeMemory();
+    void ProcessCombat(float deltaTime);
+
 };
 
 #endif //CPP_LEARNING_GAMELOOP_H

@@ -9,6 +9,7 @@
 #include "GameLoop.h"
 #include "../Util/MathUtil.h"
 #include "../Entities/BasicEnemy.h"
+#include "../Entities/Projectile.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NullDereference"
@@ -31,8 +32,8 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
 
     bool hasCreated = false;
     float time = 0;
-    float timeToDestroy = 10;
-    float timeToCreate = 5;
+    float timeToRestart = 5;
+    float timeToCreate = 2.5;
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -50,6 +51,8 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
         entityResolver->GetPlayer()->Draw();
 
         DrawEnemies();
+        ProcessCombat(deltaTime);
+
         EndDrawing();
 
         time += deltaTime;
@@ -57,19 +60,16 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
         std::stringstream timeString;
         timeString << "time" << time;
 
-//        std::cout << timeString.str() << std::endl;
-
         // TODO make a wave system out of this
         if (!hasCreated && time >= timeToCreate) {
-            GenerateEnemies(20);
+            GenerateEnemies(10);
             hasCreated = true;
         }
 
-//        if (hasCreated && time >= timeToDestroy) {
-//            entityResolver->DeleteEnemies();
-//            time = 0;
-//            hasCreated = false;
-//        }
+        if (hasCreated && time >= timeToRestart) {
+            time = 0;
+            hasCreated = false;
+        }
     }
 
     //TODO let's unload the memory of the enemies etc
@@ -111,7 +111,7 @@ void GameLoop::GenerateEnemies(int count) {
     for (int i = 0; i < count; ++i) {
         Vector2 randomPosition{float(distW(e)), float(distH(e))};
 
-        while (Vector2Distance(randomPosition, entityResolver->GetPlayer()->GetPosition()) <= 30) {
+        while (Vector2Distance(randomPosition, entityResolver->GetPlayer()->GetPosition()) <= (Player::Radius + Projectile::Radius + Projectile::AvoidanceBonus)) {
             randomPosition = Vector2{float(distW(e)), float(distH(e))};
         }
 
@@ -123,6 +123,50 @@ void GameLoop::GenerateEnemies(int count) {
 void GameLoop::FreeMemory() {
     entityResolver->DeletePlayer();
     free(entityResolver);
+}
+
+void GameLoop::ProcessCombat(float deltaTime) {
+    Player *player = entityResolver->GetPlayer();
+    bool hasFired = player->Fire(deltaTime);
+
+    if (hasFired) {
+        auto *projectile = new Projectile(player->GetPosition(), player->GetFirePosition());
+        entityResolver->RegisterProjectile(projectile);
+    }
+
+    bool enemyWasHit = false;
+    bool projectileExpired = false;
+
+    for (Projectile *projectile: entityResolver->GetProjectiles()) {
+        projectile->Move(deltaTime);
+        projectile->Draw();
+
+        for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
+            Vector2 enemyPosition = enemy->GetPosition();
+
+            //Delete hit enemies
+            //They're hit if the distance between them is smaller than or equal to their added radii
+            if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= BasicEnemy::Radius + Projectile::Radius) {
+                enemy->MarkForDeletion();
+                enemyWasHit = true;
+                projectile->MarkForDeletion();
+            }
+        };
+
+        if(projectile->GetToDelete())
+        {
+            projectileExpired = true;
+        }
+    }
+
+    if (enemyWasHit) {
+        entityResolver->CleanEnemies();
+    }
+
+    if(projectileExpired)
+    {
+        entityResolver->CleanProjectiles();
+    }
 }
 
 #pragma clang diagnostic pop
