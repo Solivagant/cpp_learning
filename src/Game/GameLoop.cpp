@@ -20,13 +20,13 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
     InitWindow(this->screenWidth, this->screenHeight, "KILLABETH");
 
     // Load background texture
-    Texture2D background = LoadTexture("assets/background.png");
+//    Texture2D background = LoadTexture("assets/background.png");
 
     SetTargetFPS(60);  // Set our game to run at 60 frames-per-second
 
     //CalculateCenter background in window
-    auto distance = CalculateCenter(Vector2{(float) background.width, (float) background.height},
-                                    Vector2{(float) screenWidth, (float) screenHeight});
+//    auto distance = CalculateCenter(Vector2{(float) background.width, (float) background.height},
+//                                    Vector2{(float) screenWidth, (float) screenHeight});
 
     RegisterPlayer();
 
@@ -44,13 +44,13 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
 
         // Draw
         BeginDrawing();
-        ClearBackground(WHITE);
+        ClearBackground(BLACK);
 
         // Draw the background
-        DrawTexture(background, -(int) distance.x, -(int) distance.y, WHITE);
+//        DrawTexture(background, -(int) distance.x, -(int) distance.y, WHITE);
         entityResolver->GetPlayer()->Draw();
 
-        DrawEnemies();
+        DrawEnemies(deltaTime);
         ProcessCombat(deltaTime);
 
         EndDrawing();
@@ -72,10 +72,8 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
         }
     }
 
-    //TODO let's unload the memory of the enemies etc
-    // De-Initialization
     FreeMemory();
-    UnloadTexture(background); // Unload background texture
+//    UnloadTexture(background); // Unload background texture
     CloseWindow(); // Close window and OpenGL context
 
     return 0;
@@ -96,9 +94,9 @@ void GameLoop::MoveEnemies(float deltaTime) {
     }
 }
 
-void GameLoop::DrawEnemies() {
+void GameLoop::DrawEnemies(float deltaTime) {
     for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
-        enemy->Draw();
+        enemy->Draw(deltaTime);
     }
 }
 
@@ -147,9 +145,14 @@ void GameLoop::ProcessCombat(float deltaTime) {
             //Delete hit enemies
             //They're hit if the distance between them is smaller than or equal to their added radii
             if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= BasicEnemy::Radius + Projectile::Radius) {
-                enemy->MarkForDeletion();
+                enemy->MarkDying();
                 enemyWasHit = true;
                 projectile->MarkForDeletion();
+            }
+
+            if(enemy->GetToDelete())
+            {
+                enemyWasHit = true;
             }
         };
 

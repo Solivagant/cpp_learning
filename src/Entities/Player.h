@@ -17,7 +17,7 @@ public:
 
     Player(Vector2 initialPosition);
     void Move(float deltaTime);
-    void Draw() override;
+    void Draw() ;
     bool Fire(float deltaTime);
     Vector2 GetFirePosition();
 private:

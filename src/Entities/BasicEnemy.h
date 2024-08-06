@@ -15,16 +15,19 @@ class BasicEnemy : public AEntity {
 public:
     static const int Radius = 15;
     constexpr static const float InitialSpeed = 120.0f;
-    static const int AvoidanceRange = 30;
-
+    static const int AvoidanceBonus = 3;
 
     BasicEnemy(Vector2 initialPosition);
-    void Draw() override;
+    void Draw(float deltaTime);
     void Move(float deltaTime, Player* player, std::vector<BasicEnemy*> enemies);
+    void MarkDying();
     void MarkForDeletion();
     bool GetToDelete() { return toDelete; }
 private:
     bool toDelete;
+    bool isDying;
+    float ColorAlpha = 1;
+    float timeDying = 0;
 };
 
 #endif //CPP_LEARNING_BASICENEMY_H

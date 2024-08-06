@@ -17,9 +17,9 @@ private:
     EntityResolver* entityResolver;
     int screenWidth;
     int screenHeight;
-    void DrawEnemies();
-    void MoveEnemies(float d);
-    void GenerateEnemies(int i);
+    void DrawEnemies(float deltaTime);
+    void MoveEnemies(float deltaTime);
+    void GenerateEnemies(int count);
     void RegisterPlayer();
     void FreeMemory();
     void ProcessCombat(float deltaTime);

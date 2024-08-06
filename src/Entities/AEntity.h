@@ -9,8 +9,6 @@
 
 class AEntity {
 public:
-    virtual void Draw() = 0;
-
     Vector2 GetPosition() {
         return position;
     }

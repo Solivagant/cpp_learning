@@ -16,7 +16,7 @@ public:
     constexpr static const float TimeToLive = 3.0f;
 
     Projectile(Vector2 initialPosition, Vector2 targetPosition);
-    void Draw() override;
+    void Draw() ;
     void Move(float d);
     void MarkForDeletion();
     bool GetToDelete() { return toDelete; }
