@@ -8,7 +8,7 @@
 
 BasicEnemy::BasicEnemy(Vector2 initialPosition) {
     position = initialPosition;
-    speed = 100.0f;
+    speed = 120.0f;
 }
 
 void BasicEnemy::Draw() {

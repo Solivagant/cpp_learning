@@ -61,15 +61,15 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
 
         // TODO make a wave system out of this
         if (!hasCreated && time >= timeToCreate) {
-            GenerateEnemies(50);
+            GenerateEnemies(20);
             hasCreated = true;
         }
 
-        if (hasCreated && time >= timeToDestroy) {
-            entityResolver->DeleteEnemies();
-            time = 0;
-            hasCreated = false;
-        }
+//        if (hasCreated && time >= timeToDestroy) {
+//            entityResolver->DeleteEnemies();
+//            time = 0;
+//            hasCreated = false;
+//        }
     }
 
     //TODO let's unload the memory of the enemies etc

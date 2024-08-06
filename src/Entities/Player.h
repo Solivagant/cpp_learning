@@ -14,6 +14,8 @@ public:
     Player(Vector2 initialPosition);
     void Move(float deltaTime);
     void Draw() override;
+private:
+    float timeMoveHeld;
 };
 
 #endif //CPP_LEARNING_PLAYER_H
