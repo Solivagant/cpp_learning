@@ -12,7 +12,7 @@
 class Player : public AEntity {
 public:
     Player(Vector2 initialPosition);
-    void Move(float deltaTime) override;
+    void Move(float deltaTime);
     void Draw() override;
 };
 

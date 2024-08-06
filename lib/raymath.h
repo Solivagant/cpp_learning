@@ -166,7 +166,7 @@ typedef struct float16 {
 #include <math.h>       // Required for: sinf(), cosf(), tan(), atan2f(), sqrtf(), floor(), fminf(), fmaxf(), fabs()
 
 //----------------------------------------------------------------------------------
-// Module Functions Definition - Utils math
+// Module Functions Definition - Util math
 //----------------------------------------------------------------------------------
 
 // Clamp float value

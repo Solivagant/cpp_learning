@@ -14,11 +14,14 @@ public:
     int RunGame(int screenWidth, int screenHeight);
 
 private:
-    EntityResolver entityResolver;
+    EntityResolver* entityResolver;
     int screenWidth;
     int screenHeight;
     void DrawEnemies();
     void MoveEnemies(float d);
+    void GenerateEnemies(int i);
+    void RegisterPlayer();
+    void FreeMemory();
 };
 
 #endif //CPP_LEARNING_GAMELOOP_H

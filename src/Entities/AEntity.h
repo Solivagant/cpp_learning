@@ -10,7 +10,6 @@
 class AEntity {
 public:
     virtual void Draw() = 0;
-    virtual void Move(float deltaTime) = 0;
 
     Vector2 GetPosition() {
         return position;

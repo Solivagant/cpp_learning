@@ -7,9 +7,9 @@
 
 #include <vector>
 #include "Player.h"
+#include "BasicEnemy.h"
 
 // Forward declaration of BasicEnemy
-class BasicEnemy;
 
 class EntityResolver {
 public:
@@ -17,7 +17,9 @@ public:
     void RegisterEnemy(BasicEnemy* enemy);
     Player* GetPlayer();
     std::vector<BasicEnemy*> GetEnemies();
+    void DeleteEnemies();
 
+    void DeletePlayer();
 private:
     std::vector<BasicEnemy*> enemies;
     Player* player;

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 project(cpp_learning)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_executable(cpp_learning src/main.cpp
         src/StdSample.cpp
@@ -20,8 +20,8 @@ add_executable(cpp_learning src/main.cpp
         src/SampleMain.cpp
         src/Game/GameLoop.cpp
         src/Game/GameLoop.h
-        src/Game/MathUtil.cpp
-        src/Game/MathUtil.h
+        src/Util/MathUtil.cpp
+        src/Util/MathUtil.h
         src/Entities/Player.cpp
         src/Entities/Player.h
         src/Entities/AEntity.h

@@ -19,3 +19,17 @@ void EntityResolver::RegisterPlayer(Player *player) {
 Player *EntityResolver::GetPlayer() {
     return player;
 }
+
+void EntityResolver::DeleteEnemies(){
+    for (auto enemy : enemies) {
+        delete enemy;
+    }
+    enemies.clear();
+
+    std::vector<BasicEnemy*> newEnemies;
+    enemies = newEnemies;
+}
+
+void EntityResolver::DeletePlayer() {
+    delete player;
+}
