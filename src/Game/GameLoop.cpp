@@ -1,15 +1,12 @@
 //
 // Created by Geraldo Nascimento on 05/08/2024.
-//
-#include <format>
+// Using raylib
+// https://www.raylib.com/cheatsheet/cheatsheet.html
 #include <random>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
 #include "GameLoop.h"
-#include "../Util/MathUtil.h"
-#include "../Entities/BasicEnemy.h"
-#include "../Entities/Projectile.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NullDereference"
@@ -34,6 +31,8 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
     float time = 0;
     float timeToRestart = 5;
     float timeToCreate = 2.5;
+
+    BitShiftTests();
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -119,6 +118,7 @@ void GameLoop::GenerateEnemies(int count) {
 }
 
 void GameLoop::FreeMemory() {
+    entityResolver->DeleteEnemies();
     entityResolver->DeletePlayer();
     free(entityResolver);
 }
@@ -170,6 +170,24 @@ void GameLoop::ProcessCombat(float deltaTime) {
     {
         entityResolver->CleanProjectiles();
     }
+}
+
+void GameLoop::BitShiftTests() {
+    int bin = 0x0001;
+
+    std::cout << bin << std::endl;
+
+    //bit shift to the left
+    //is multiplying by 2;
+    bin = bin << 1;
+    std::cout << bin << std::endl;
+    bin = bin << 2;
+    std::cout << bin << std::endl;
+
+    //bit shifting to the right is dividing by 2
+    bin = bin >> 4;
+    std::cout << bin << std::endl;
+
 }
 
 #pragma clang diagnostic pop

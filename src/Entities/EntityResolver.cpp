@@ -3,6 +3,8 @@
 //
 
 #include "EntityResolver.h"
+#include <iostream>
+#include <sstream>
 
 std::vector <BasicEnemy*> EntityResolver::GetEnemies() {
     return enemies;
@@ -32,7 +34,9 @@ void EntityResolver::DeleteEnemies(){
     for (auto enemy : enemies) {
         delete enemy;
     }
-    enemies.clear();
+
+    //alternative to calling .clear(): swap with the contents of an empty vector
+    std::vector<BasicEnemy*>().swap(enemies);
 
     std::vector<BasicEnemy*> newEnemies;
     enemies = newEnemies;

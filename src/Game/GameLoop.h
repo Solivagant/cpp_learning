@@ -24,6 +24,7 @@ private:
     void FreeMemory();
     void ProcessCombat(float deltaTime);
 
+    void BitShiftTests();
 };
 
 #endif //CPP_LEARNING_GAMELOOP_H
