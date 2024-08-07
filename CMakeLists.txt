@@ -4,8 +4,8 @@ project(cpp_learning)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(cpp_learning src/main.cpp
-        src/StdSample.cpp
-        src/StdSample.h
+        src/Learning/Learning.cpp
+        src/Learning/Learning.h
         src/VHS/VideoClub.cpp
         src/VHS/VideoClub.h
         src/VHS/Rental.cpp
@@ -17,7 +17,7 @@ add_executable(cpp_learning src/main.cpp
         src/VHS/Registration.h
         lib/raylib.h
         lib/raymath.h
-        src/SampleMain.cpp
+        src/Learning/learningMain.cpp
         src/Game/GameLoop.cpp
         src/Game/GameLoop.h
         src/Util/MathUtil.cpp
@@ -31,6 +31,8 @@ add_executable(cpp_learning src/main.cpp
         src/Entities/EntityResolver.h
         src/Entities/Projectile.cpp
         src/Entities/Projectile.h
+        src/Game/Background.cpp
+        src/Game/Background.h
 )
 
 # Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows

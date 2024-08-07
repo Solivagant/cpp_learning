@@ -9,15 +9,16 @@
 #define CPP_LEARNING_STDSAMPLE_H
 
 
-class StdSample {
+class Learning {
 
 public:
-    explicit StdSample(int secondsToSleep);
+    explicit Learning(int secondsToSleep);
     void CoutNoFlush();
     void CoutWithFlush();
 
 private:
 
+    void BitShiftTests();
 };
 
 

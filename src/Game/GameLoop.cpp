@@ -2,29 +2,27 @@
 // Created by Geraldo Nascimento on 05/08/2024.
 // Using raylib
 // https://www.raylib.com/cheatsheet/cheatsheet.html
-#include <random>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+
 #include "GameLoop.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NullDereference"
+
 
 int GameLoop::RunGame(int screenWidth, int screenHeight) {
     this->screenWidth = screenWidth;
     this->screenHeight = screenHeight;
     InitWindow(this->screenWidth, this->screenHeight, "KILLABETH");
 
-    // Load background texture
-//    Texture2D background = LoadTexture("assets/background.png");
-
+    background = new Background();
+    background->Init(screenWidth,screenHeight);
     SetTargetFPS(60);  // Set our game to run at 60 frames-per-second
 
-    //CalculateCenter background in window
-//    auto distance = CalculateCenter(Vector2{(float) background.width, (float) background.height},
-//                                    Vector2{(float) screenWidth, (float) screenHeight});
-
+    entityResolver = (EntityResolver *) malloc(sizeof(EntityResolver));
+    entityResolver->InitRand(screenWidth, screenHeight);
     RegisterPlayer();
 
     bool hasCreated = false;
@@ -32,7 +30,8 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
     float timeToRestart = 5;
     float timeToCreate = 2.5;
 
-    BitShiftTests();
+    std::thread t1(SpawnGenerateEnemies, entityResolver);
+    std::thread t2(SpawnRespawn, entityResolver->GetPlayer());
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -41,12 +40,10 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
         entityResolver->GetPlayer()->Move(deltaTime);
         MoveEnemies(deltaTime);
 
-        // Draw
         BeginDrawing();
         ClearBackground(BLACK);
 
-        // Draw the background
-//        DrawTexture(background, -(int) distance.x, -(int) distance.y, WHITE);
+        background->Draw();
         entityResolver->GetPlayer()->Draw();
 
         DrawEnemies(deltaTime);
@@ -61,7 +58,7 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
 
         // TODO make a wave system out of this
         if (!hasCreated && time >= timeToCreate) {
-            GenerateEnemies(10);
+//            std::thread t3(SpawnGenerateEnemies, entityResolver);
             hasCreated = true;
         }
 
@@ -71,8 +68,10 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
         }
     }
 
+    t1.join();
+    t2.join();
+
     FreeMemory();
-//    UnloadTexture(background); // Unload background texture
     CloseWindow(); // Close window and OpenGL context
 
     return 0;
@@ -82,11 +81,11 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
 //wiped when the method ends.
 void GameLoop::RegisterPlayer() {
     Player *player = new Player({(float) screenWidth / 2, (float) screenHeight / 2});
-    entityResolver = (EntityResolver *) malloc(sizeof(EntityResolver));
     entityResolver->RegisterPlayer(player);
 }
 
 void GameLoop::MoveEnemies(float deltaTime) {
+    if(entityResolver->GetPlayer()->IsDead()) return;
     for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
 //        std::cout << "enemy moving" << std::endl;
         enemy->Move(deltaTime, entityResolver->GetPlayer(), entityResolver->GetEnemies());
@@ -99,31 +98,14 @@ void GameLoop::DrawEnemies(float deltaTime) {
     }
 }
 
-void GameLoop::GenerateEnemies(int count) {
-    std::random_device rd;
-    std::mt19937 e{rd()};
-    std::uniform_int_distribution<int> distW{0, screenWidth};
-    std::uniform_int_distribution<int> distH{0, screenHeight};
-
-    for (int i = 0; i < count; ++i) {
-        Vector2 randomPosition{float(distW(e)), float(distH(e))};
-
-        while (Vector2Distance(randomPosition, entityResolver->GetPlayer()->GetPosition()) <= (Player::Radius + Projectile::Radius + Projectile::AvoidanceBonus)) {
-            randomPosition = Vector2{float(distW(e)), float(distH(e))};
-        }
-
-        auto *basicEnemy = new BasicEnemy(randomPosition);
-        entityResolver->RegisterEnemy(basicEnemy);
-    }
-}
-
 void GameLoop::FreeMemory() {
-    entityResolver->DeleteEnemies();
-    entityResolver->DeletePlayer();
+    background->Unload();
+    delete background;
+    entityResolver->FreeMemory();
     free(entityResolver);
 }
 
-void GameLoop::ProcessCombat(float deltaTime) {
+bool GameLoop::ProcessCombat(float deltaTime) {
     Player *player = entityResolver->GetPlayer();
     bool hasFired = player->Fire(deltaTime);
 
@@ -134,6 +116,7 @@ void GameLoop::ProcessCombat(float deltaTime) {
 
     bool enemyWasHit = false;
     bool projectileExpired = false;
+    bool playerDied = false;
 
     for (Projectile *projectile: entityResolver->GetProjectiles()) {
         projectile->Move(deltaTime);
@@ -150,15 +133,23 @@ void GameLoop::ProcessCombat(float deltaTime) {
                 projectile->MarkForDeletion();
             }
 
-            if(enemy->GetToDelete())
-            {
+            if (enemy->GetToDelete()) {
                 enemyWasHit = true;
             }
         };
 
-        if(projectile->GetToDelete())
-        {
+        if (projectile->GetToDelete()) {
             projectileExpired = true;
+        }
+    }
+
+    for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
+        Vector2 enemyPosition = enemy->GetPosition();
+
+        if (Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <= Player::Radius) {
+            //Player died!
+            entityResolver->GetPlayer()->Kill();
+            playerDied = true;
         }
     }
 
@@ -166,28 +157,28 @@ void GameLoop::ProcessCombat(float deltaTime) {
         entityResolver->CleanEnemies();
     }
 
-    if(projectileExpired)
-    {
+    if (projectileExpired) {
         entityResolver->CleanProjectiles();
+    }
+
+    return playerDied;
+}
+
+void SpawnGenerateEnemies(EntityResolver* entityResolver) {
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    entityResolver->GenerateEnemies(10);
+}
+
+void SpawnRespawn(Player* player) {
+    while(!WindowShouldClose())
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        if(player->IsDead())
+        {
+            player->Respawn();
+        }
     }
 }
 
-void GameLoop::BitShiftTests() {
-    int bin = 0x0001;
-
-    std::cout << bin << std::endl;
-
-    //bit shift to the left
-    //is multiplying by 2;
-    bin = bin << 1;
-    std::cout << bin << std::endl;
-    bin = bin << 2;
-    std::cout << bin << std::endl;
-
-    //bit shifting to the right is dividing by 2
-    bin = bin >> 4;
-    std::cout << bin << std::endl;
-
-}
 
 #pragma clang diagnostic pop

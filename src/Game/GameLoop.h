@@ -8,6 +8,9 @@
 #include "../../lib/raylib.h"
 #include "../../lib/raymath.h"
 #include "../Entities/EntityResolver.h"
+#include "Background.h"
+#include <thread>
+#include <chrono>
 
 class GameLoop {
 public:
@@ -15,16 +18,17 @@ public:
 
 private:
     EntityResolver* entityResolver;
+    Background* background;
     int screenWidth;
     int screenHeight;
     void DrawEnemies(float deltaTime);
     void MoveEnemies(float deltaTime);
-    void GenerateEnemies(int count);
     void RegisterPlayer();
     void FreeMemory();
-    void ProcessCombat(float deltaTime);
-
-    void BitShiftTests();
+    bool ProcessCombat(float deltaTime);
 };
+
+void SpawnGenerateEnemies(EntityResolver* entityResolver);
+void SpawnRespawn(Player* player);
 
 #endif //CPP_LEARNING_GAMELOOP_H

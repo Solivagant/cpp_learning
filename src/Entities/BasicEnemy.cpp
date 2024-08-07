@@ -14,13 +14,11 @@ BasicEnemy::BasicEnemy(Vector2 initialPosition) {
 
 void BasicEnemy::Draw(float deltaTime) {
 
-    if(isDying)
-    {
+    if (isDying) {
         timeDying += deltaTime;
         ColorAlpha -= 1.5f * timeDying;
 
-        if(ColorAlpha <= 0)
-        {
+        if (ColorAlpha <= 0) {
             MarkForDeletion();
         }
     }
@@ -28,30 +26,29 @@ void BasicEnemy::Draw(float deltaTime) {
 }
 
 // Moves towards the player
-void BasicEnemy::Move(float deltaTime, Player* player, std::vector<BasicEnemy*> enemies) {
+void BasicEnemy::Move(float deltaTime, Player *player, std::vector<BasicEnemy *> enemies) {
     Vector2 playerPosition = player->GetPosition();
     Vector2 directionToPlayer = Vector2Normalize(Vector2Subtract(playerPosition, position));
 
-    if(Vector2Distance(playerPosition, position) > Radius * 2 + AvoidanceBonus)
-    {
-        position = Vector2Add(position, Vector2Scale(directionToPlayer, speed * deltaTime));
+//    if(Vector2Distance(playerPosition, position) > Radius)
+//    {
+    position = Vector2Add(position, Vector2Scale(directionToPlayer, speed * deltaTime));
 
-        for (BasicEnemy *enemy: enemies) {
-            if (enemy == this) {
-                continue;
-            }
+    for (BasicEnemy *enemy: enemies) {
+        if (enemy == this) {
+            continue;
+        }
 
-            Vector2 enemyPosition = enemy->GetPosition();
-            if(Vector2Distance(enemyPosition, position) <= Radius * 2 + AvoidanceBonus)
-            {
-                Vector2 directionToEnemy = Vector2Normalize(Vector2Subtract(enemyPosition, position));
-                position = Vector2Subtract(position, Vector2Scale(directionToEnemy, speed * deltaTime) );
-            }
-        };
-    }
+        Vector2 enemyPosition = enemy->GetPosition();
+        if (Vector2Distance(enemyPosition, position) <= Radius * 2 + AvoidanceBonus) {
+            Vector2 directionToEnemy = Vector2Normalize(Vector2Subtract(enemyPosition, position));
+            position = Vector2Subtract(position, Vector2Scale(directionToEnemy, speed * deltaTime));
+        }
+    };
+//    }
 }
 
-void BasicEnemy::MarkDying(){
+void BasicEnemy::MarkDying() {
     timeDying = 0;
     isDying = true;
 }

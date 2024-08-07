@@ -1,6 +1,6 @@
 #include <iostream>
-#include "StdSample.h"
-#include "VHS/VideoClub.h"
+#include "Learning.h"
+#include "../VHS/VideoClub.h"
 
 void IterateArray();
 void CoutTests();
@@ -52,8 +52,8 @@ void DoubleArrowOperator() {
 }
 
 void CoutTests() {
-    StdSample sample(10);
-    StdSample *samplePointer = &sample;
+    Learning sample(10);
+    Learning *samplePointer = &sample;
     sample.CoutWithFlush();
     sample.CoutNoFlush();
     samplePointer->CoutNoFlush();
