@@ -13,6 +13,8 @@ public:
         return position;
     }
 
+    virtual void DealDamage(int amount) = 0;
+
 protected:
     Vector2 position;
     float speed;

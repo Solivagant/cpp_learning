@@ -5,9 +5,9 @@
 #ifndef CPP_LEARNING_PROJECTILE_H
 #define CPP_LEARNING_PROJECTILE_H
 
-#include "AEntity.h"
+#include "../../lib/raylib.h"
 
-class Projectile : public AEntity  {
+class Projectile  {
 public:
     static const int Radius = 10;
     static const int AvoidanceBonus = 5;
@@ -20,10 +20,18 @@ public:
     void Move(float d);
     void MarkForDeletion();
     bool GetToDelete() { return toDelete; }
+
+    Vector2 GetPosition() {
+        return position;
+    }
+
 private:
     Vector2 targetDirection;
     float timeAlive;
     bool toDelete;
+
+    Vector2 position;
+    float speed;
 };
 
 #endif //CPP_LEARNING_PROJECTILE_H

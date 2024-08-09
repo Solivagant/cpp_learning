@@ -1,15 +1,18 @@
 #include "Game/GameLoop.h"
+#include "Game/GameData.h"
+#include "Combat/CombatHandler.h"
+#include "ServiceLocator.h"
 
 int main() {
-    //This could be:
-    // Game gameLoop();
-    // return gameLoop.RunGame();
-    //
-    //But I wanted to manually allocate memory.
-    //
+
+    //Create dependencies
+    ServiceLocator serviceLocator = ServiceLocator();
+    serviceLocator.Init();
+
+    //Explicit memory allocation just because.
     GameLoop* gameLoopPtr;
     gameLoopPtr = (GameLoop*)malloc(sizeof(GameLoop));
-    int exitCode = gameLoopPtr->RunGame(1024,760);
+    int exitCode = gameLoopPtr->RunGame(&serviceLocator);
 
     free(gameLoopPtr);
     return exitCode;

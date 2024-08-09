@@ -9,14 +9,15 @@ static const float maxHoldTime = 1.5;
 static const float speedBoost = 1.0f;
 static const float timePerFire = 0.25f;
 
-Player::Player(Vector2 initialPosition) {
+Player::Player(PlayerData* playerData, Vector2 initialPosition) {
     this->initialPosition = initialPosition;
+    this->playerData = playerData;
     position = initialPosition;
     speed = InitialSpeed;
 }
 
 void Player::Move(float deltaTime) {
-    if(isDead) return;
+    if(playerData->IsDead()) return;
 
     // Move player with arrow keys
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
@@ -54,10 +55,8 @@ void Player::Move(float deltaTime) {
 }
 
 void Player::Draw() {
-    if(!isDead)
-    {
-        DrawCircleV(position, Radius, GREEN);
-    }
+    if (!playerData->IsDead()) DrawCircleV(position, Radius, GREEN);
+
 }
 
 bool Player::Fire(float deltaTime) {
@@ -77,16 +76,12 @@ Vector2 Player::GetFirePosition() {
     return GetMousePosition();
 }
 
-bool Player::IsDead() {
-    return isDead;
-}
-
-void Player::Kill() {
-    isDead = true;
-}
-
 void Player::Respawn() {
-    isDead = false;
     position = initialPosition;
+    playerData->SetHealth(1);
 }
 
+void Player::DealDamage(int amount) {
+    //TODO deal actual damage
+    playerData->SetHealth(0);
+}

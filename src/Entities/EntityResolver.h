@@ -8,7 +8,7 @@
 #include <random>
 #include <vector>
 #include "Player.h"
-#include "BasicEnemy.h"
+#include "Enemies/BasicEnemy.h"
 #include "Projectile.h"
 #include "../../lib/raylib.h"
 #include "../../lib/raymath.h"

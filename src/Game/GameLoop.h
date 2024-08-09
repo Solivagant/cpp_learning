@@ -8,27 +8,28 @@
 #include "../../lib/raylib.h"
 #include "../../lib/raymath.h"
 #include "../Entities/EntityResolver.h"
-#include "Background.h"
+#include "BackgroundService.h"
+#include "../ServiceLocator.h"
 #include <thread>
 #include <chrono>
 
 class GameLoop {
 public:
-    int RunGame(int screenWidth, int screenHeight);
+    int RunGame(ServiceLocator* serviceLocator);
 
 private:
+    GameData* gameData;
+    WaveSystem* waveSystem;
+    CombatHandler* combatHandler;
     EntityResolver* entityResolver;
-    Background* background;
-    int screenWidth;
-    int screenHeight;
+
+    BackgroundService* background;
+    PlayerData* playerData;
+
     void DrawEnemies(float deltaTime);
     void MoveEnemies(float deltaTime);
-    void RegisterPlayer();
+    Player* RegisterPlayer();
     void FreeMemory();
-    bool ProcessCombat(float deltaTime);
 };
-
-void SpawnGenerateEnemies(EntityResolver* entityResolver);
-void SpawnRespawn(Player* player);
 
 #endif //CPP_LEARNING_GAMELOOP_H

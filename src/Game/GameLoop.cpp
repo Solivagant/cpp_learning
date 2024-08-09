@@ -3,73 +3,69 @@
 // Using raylib
 // https://www.raylib.com/cheatsheet/cheatsheet.html
 #include <iostream>
-#include <sstream>
 #include <cstdlib>
 
 #include "GameLoop.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "NullDereference"
+//Declare functions to run in thread
+void SpawnRespawn(PlayerData* playerData, Player* player, EntityResolver* entityResolver);
 
+int GameLoop::RunGame(ServiceLocator* serviceLocator) {
+    entityResolver = serviceLocator->GetEntityResolver();
+    gameData = serviceLocator->GetGameData();
+    background = serviceLocator->GetBackgroundService();
+    combatHandler = serviceLocator->GetCombatHandler();
+    waveSystem = serviceLocator->GetWaveSystem();
+    playerData = serviceLocator->GetPlayerData();
 
-int GameLoop::RunGame(int screenWidth, int screenHeight) {
-    this->screenWidth = screenWidth;
-    this->screenHeight = screenHeight;
-    InitWindow(this->screenWidth, this->screenHeight, "KILLABETH");
+    int width = gameData->GetScreenWidth();
+    int height = gameData->GetScreenHeight();
 
-    background = new Background();
-    background->Init(screenWidth,screenHeight);
-    SetTargetFPS(60);  // Set our game to run at 60 frames-per-second
+    gameData->SetIsRunning(true);
 
-    entityResolver = (EntityResolver *) malloc(sizeof(EntityResolver));
-    entityResolver->InitRand(screenWidth, screenHeight);
-    RegisterPlayer();
+    InitWindow(width, height, "DOT SURVIVOR");
+    SetTargetFPS(60);
 
-    bool hasCreated = false;
-    float time = 0;
-    float timeToRestart = 5;
-    float timeToCreate = 2.5;
+    entityResolver->InitRand(width, height);
+    background->Init(width, height);
 
-    std::thread t1(SpawnGenerateEnemies, entityResolver);
-    std::thread t2(SpawnRespawn, entityResolver->GetPlayer());
+    Player *player = RegisterPlayer();
+    waveSystem->StartWave();
+
+    std::thread t1 = std::thread(SpawnRespawn, playerData, player, entityResolver);
+    bool playerDied = false;
 
     // Main game loop
     while (!WindowShouldClose()) {
         // Update
         float deltaTime = GetFrameTime();
-        entityResolver->GetPlayer()->Move(deltaTime);
+        player->Move(deltaTime);
         MoveEnemies(deltaTime);
 
         BeginDrawing();
         ClearBackground(BLACK);
 
         background->Draw();
-        entityResolver->GetPlayer()->Draw();
+        player->Draw();
 
         DrawEnemies(deltaTime);
-        ProcessCombat(deltaTime);
-
+        playerDied = combatHandler->ProcessCombat(deltaTime);
+        if(playerDied)
+        {
+            entityResolver->DeleteEnemies();
+        }
+        
         EndDrawing();
-
-        time += deltaTime;
-
-        std::stringstream timeString;
-        timeString << "time" << time;
-
-        // TODO make a wave system out of this
-        if (!hasCreated && time >= timeToCreate) {
-//            std::thread t3(SpawnGenerateEnemies, entityResolver);
-            hasCreated = true;
-        }
-
-        if (hasCreated && time >= timeToRestart) {
-            time = 0;
-            hasCreated = false;
-        }
     }
 
-    t1.join();
-    t2.join();
+    playerData->SetHealth(0);
+    gameData->SetIsRunning(false);
+
+    if(t1.joinable())
+    {
+        t1.join();
+    }
+    waveSystem->Shutdown();
 
     FreeMemory();
     CloseWindow(); // Close window and OpenGL context
@@ -77,18 +73,19 @@ int GameLoop::RunGame(int screenWidth, int screenHeight) {
     return 0;
 }
 
-//Previously I was getting memory access violation, because Player player(x, y) creates the object on the stack, which gets
-//wiped when the method ends.
-void GameLoop::RegisterPlayer() {
-    Player *player = new Player({(float) screenWidth / 2, (float) screenHeight / 2});
+Player* GameLoop::RegisterPlayer() {
+    Player *player = new Player(playerData, {(float) gameData->GetScreenWidth() / 2, (float) gameData->GetScreenHeight() / 2});
     entityResolver->RegisterPlayer(player);
+    return player;
 }
 
 void GameLoop::MoveEnemies(float deltaTime) {
-    if(entityResolver->GetPlayer()->IsDead()) return;
-    for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
-//        std::cout << "enemy moving" << std::endl;
-        enemy->Move(deltaTime, entityResolver->GetPlayer(), entityResolver->GetEnemies());
+    Player *player = entityResolver->GetPlayer();
+    if(playerData->IsDead()) return;
+
+    auto enemies = entityResolver->GetEnemies();
+    for (BasicEnemy *enemy: enemies) {
+        enemy->Move(deltaTime, player, enemies);
     }
 }
 
@@ -98,87 +95,19 @@ void GameLoop::DrawEnemies(float deltaTime) {
     }
 }
 
+void SpawnRespawn(PlayerData* playerData, Player* player, EntityResolver* entityResolver) {
+    while (!WindowShouldClose()) {
+        if(playerData->IsDead())
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            player->Respawn();
+        }
+    }
+}
+
 void GameLoop::FreeMemory() {
     background->Unload();
     delete background;
     entityResolver->FreeMemory();
     free(entityResolver);
 }
-
-bool GameLoop::ProcessCombat(float deltaTime) {
-    Player *player = entityResolver->GetPlayer();
-    bool hasFired = player->Fire(deltaTime);
-
-    if (hasFired) {
-        auto *projectile = new Projectile(player->GetPosition(), player->GetFirePosition());
-        entityResolver->RegisterProjectile(projectile);
-    }
-
-    bool enemyWasHit = false;
-    bool projectileExpired = false;
-    bool playerDied = false;
-
-    for (Projectile *projectile: entityResolver->GetProjectiles()) {
-        projectile->Move(deltaTime);
-        projectile->Draw();
-
-        for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
-            Vector2 enemyPosition = enemy->GetPosition();
-
-            //Delete hit enemies
-            //They're hit if the distance between them is smaller than or equal to their added radii
-            if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= BasicEnemy::Radius + Projectile::Radius) {
-                enemy->MarkDying();
-                enemyWasHit = true;
-                projectile->MarkForDeletion();
-            }
-
-            if (enemy->GetToDelete()) {
-                enemyWasHit = true;
-            }
-        };
-
-        if (projectile->GetToDelete()) {
-            projectileExpired = true;
-        }
-    }
-
-    for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
-        Vector2 enemyPosition = enemy->GetPosition();
-
-        if (Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <= Player::Radius) {
-            //Player died!
-            entityResolver->GetPlayer()->Kill();
-            playerDied = true;
-        }
-    }
-
-    if (enemyWasHit) {
-        entityResolver->CleanEnemies();
-    }
-
-    if (projectileExpired) {
-        entityResolver->CleanProjectiles();
-    }
-
-    return playerDied;
-}
-
-void SpawnGenerateEnemies(EntityResolver* entityResolver) {
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    entityResolver->GenerateEnemies(10);
-}
-
-void SpawnRespawn(Player* player) {
-    while(!WindowShouldClose())
-    {
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        if(player->IsDead())
-        {
-            player->Respawn();
-        }
-    }
-}
-
-
-#pragma clang diagnostic pop

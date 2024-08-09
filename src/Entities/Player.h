@@ -7,6 +7,7 @@
 
 #include "../../lib/raylib.h"
 #include "AEntity.h"
+#include "../Stats/PlayerData.h"
 #include <thread>
 #include <chrono>
 
@@ -16,17 +17,16 @@ public:
     static const int Radius = 15;
     constexpr static const float InitialSpeed = 200.0f;
 
-    Player(Vector2 initialPosition);
+    Player(PlayerData* playerData, Vector2 initialPosition);
     void Move(float deltaTime);
     void Draw() ;
     bool Fire(float deltaTime);
     Vector2 GetFirePosition();
-    bool IsDead();
-    void Kill();
     void Respawn();
+    void DealDamage(int amount) override;
 private:
+    PlayerData* playerData;
     Vector2 initialPosition;
-    bool isDead;
     float timeMoveHeld;
     float timeToFire;
 };
