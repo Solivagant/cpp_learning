@@ -14,12 +14,15 @@ private:
     int maxHealth = 10;
     int health = 10;
 
-    int xpPerLevel = 50;
+    int xpPerLevel = 5;
     int xp = 0;
+
+    int level = 1;
 public:
     int GetXPToNextLevel();
     int GetXP() const;
     void SetXP(int xp);
+    int GetLevel();
 public:
     bool IsDead();
     float GetMaxHealth();

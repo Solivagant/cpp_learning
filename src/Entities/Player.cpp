@@ -4,6 +4,7 @@
 
 #include "../../lib/raylib.h"
 #include "Player.h"
+#include <sstream>
 
 static const float maxHoldTime = 1.5;
 static const float speedBoost = 1.0f;
@@ -68,8 +69,14 @@ void Player::Draw() {
         float healthSegmentSize = (float)gameData->GetScreenWidth() / playerData->GetMaxHealth();
         float xpSegmentSize = (float)gameData->GetScreenWidth() / playerData->GetXPToNextLevel();
 
+        std::stringstream stream;
+        stream << playerData->GetLevel();
+        auto string = stream.str();
+        const char* te = string.c_str();
         DrawRectangleV(Vector2{0, (float)gameData->GetScreenHeight() - 20}, Vector2{(float)healthSegmentSize * (float)playerData->GetHealth(), 20}, GREEN);
         DrawRectangleV(Vector2{0, 0}, Vector2{(float)xpSegmentSize * (float)playerData->GetXP(), 20}, ORANGE);
+        DrawRectangleV(Vector2{(float)gameData->GetScreenWidth() - 30, 0}, Vector2 {50, 20}, BLACK);
+        DrawText(te, (float)gameData->GetScreenWidth() - 20, 0, 20, WHITE);
     }
 }
 

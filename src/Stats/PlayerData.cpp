@@ -25,9 +25,18 @@ int PlayerData::GetXP() const {
 }
 
 void PlayerData::SetXP(int xp) {
-    PlayerData::xp = xp;
+    this->xp = xp;
+    if(xp >= xpPerLevel)
+    {
+        this->xp = 0;
+        level++;
+    }
 }
 
 int PlayerData::GetXPToNextLevel() {
     return xpPerLevel;
+}
+
+int PlayerData::GetLevel() {
+    return level;
 }
