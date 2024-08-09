@@ -11,10 +11,11 @@ public:
     int GetHealth() const;
     void SetHealth(int health);
 private:
-    int maxHealth;
-    int health = 1;
+    int maxHealth = 10;
+    int health = 10;
 public:
     bool IsDead();
+    float GetMaxHealth();
 };
 
 #endif //CPP_LEARNING_PLAYERDATA_H

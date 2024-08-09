@@ -8,6 +8,7 @@
 #include "../../lib/raylib.h"
 #include "AEntity.h"
 #include "../Stats/PlayerData.h"
+#include "../Game/GameData.h"
 #include <thread>
 #include <chrono>
 
@@ -17,9 +18,9 @@ public:
     static const int Radius = 15;
     constexpr static const float InitialSpeed = 200.0f;
 
-    Player(PlayerData* playerData, Vector2 initialPosition);
+    Player(PlayerData* playerData, GameData* gameData, Vector2 initialPosition);
     void Move(float deltaTime);
-    void Draw() ;
+    void Draw();
     bool Fire(float deltaTime);
     Vector2 GetFirePosition();
     void Respawn();
@@ -29,7 +30,11 @@ private:
     Vector2 initialPosition;
     float timeMoveHeld;
     float timeToFire;
+    bool IsInputRightHeld() const;
+    bool IsInputLeftHeld() const;
+    bool IsInputUpHeld() const;
+    bool IsInputDownHeld() const;
+    GameData* gameData;
 };
-
 
 #endif //CPP_LEARNING_PLAYER_H

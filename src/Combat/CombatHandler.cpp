@@ -4,8 +4,9 @@
 
 #include "CombatHandler.h"
 
-CombatHandler::CombatHandler(GameData* gameData, EntityResolver *entityResolver) {
+CombatHandler::CombatHandler(GameData* gameData, PlayerData* playerData, EntityResolver *entityResolver) {
     this->gameData = gameData;
+    this->playerData = playerData;
     this->entityResolver = entityResolver;
 }
 
@@ -50,10 +51,17 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
         Vector2 enemyPosition = enemy->GetPosition();
 
-        if (Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <= Player::Radius) {
-            //Player died!
+        if (!enemy->GetIsDying() && Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <= BasicEnemy::Radius + Player::Radius) {
+            //Player hit
             DealDamage(player, 1);
-            return true;
+
+            //Kill enemy as well
+            DealDamage(enemy, 1);
+            enemyWasHit = true;
+            if(playerData->IsDead())
+            {
+                return true;
+            }
         }
     }
 
@@ -64,6 +72,8 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     if (projectileExpired) {
         entityResolver->CleanProjectiles();
     }
+
+    return false;
 }
 
 void CombatHandler::DealDamage(AEntity* x, int amount) {

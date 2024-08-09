@@ -30,6 +30,11 @@ void SpawnGenerateEnemies(PlayerData* playerData, GameData *gameData, EntityReso
             timePassed = 0;
         }
 
+        if(playerData->IsDead())
+        {
+            timePassed = 5000;
+        }
+
         while (!playerData->IsDead() && timePassed < 5000 && gameData->GetIsRunning()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             timePassed += 500;

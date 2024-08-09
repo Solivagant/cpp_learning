@@ -9,62 +9,73 @@ static const float maxHoldTime = 1.5;
 static const float speedBoost = 1.0f;
 static const float timePerFire = 0.25f;
 
-Player::Player(PlayerData* playerData, Vector2 initialPosition) {
+bool Player::IsInputDownHeld() const { return IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S); }
+
+bool Player::IsInputUpHeld() const { return IsKeyDown(KEY_UP) || IsKeyDown(KEY_W); }
+
+bool Player::IsInputLeftHeld() const { return IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A); }
+
+bool Player::IsInputRightHeld() const { return IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D); }
+
+Player::Player(PlayerData* playerData, GameData* gameData, Vector2 initialPosition) {
     this->initialPosition = initialPosition;
     this->playerData = playerData;
+    this->gameData = gameData;
     position = initialPosition;
     speed = InitialSpeed;
 }
 
 void Player::Move(float deltaTime) {
-    if(playerData->IsDead()) return;
+    if (playerData->IsDead()) return;
 
-    // Move player with arrow keys
-    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
+    if (IsInputRightHeld()) {
         position.x += speed * deltaTime;
         timeMoveHeld += deltaTime;
     }
 
-    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
+    if (IsInputLeftHeld()) {
         position.x -= speed * deltaTime;
         timeMoveHeld += deltaTime;
     }
 
-    if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {
+    if (IsInputUpHeld()) {
         position.y -= speed * deltaTime;
         timeMoveHeld += deltaTime;
     }
 
-    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
+    if (IsInputDownHeld()) {
         position.y += speed * deltaTime;
         timeMoveHeld += deltaTime;
     }
 
     if (!(IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) ||
-        IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A) ||
-        IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) ||
-        IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
+          IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A) ||
+          IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) ||
+          IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
         timeMoveHeld = 0;
         speed = InitialSpeed;
     }
 
-    if(timeMoveHeld > 0 && timeMoveHeld < maxHoldTime)
-    {
+    if (timeMoveHeld > 0 && timeMoveHeld < maxHoldTime) {
         speed += speedBoost;
     }
 }
 
 void Player::Draw() {
-    if (!playerData->IsDead()) DrawCircleV(position, Radius, GREEN);
+    if (!playerData->IsDead()) {
+        DrawCircleV(position, Radius, GREEN);
+
+        float segmentSize = (float)gameData->GetScreenWidth() / playerData->GetMaxHealth();
+
+        DrawRectangleV(Vector2{0, (float)gameData->GetScreenHeight() - 20}, Vector2{(float)segmentSize * (float)playerData->GetHealth(), 20}, GREEN);
+    }
 
 }
 
 bool Player::Fire(float deltaTime) {
     timeToFire += deltaTime;
-    if(IsMouseButtonDown(0))
-    {
-        if(timeToFire > timePerFire)
-        {
+    if (IsMouseButtonDown(0)) {
+        if (timeToFire > timePerFire) {
             timeToFire = 0;
             return true;
         }
@@ -78,10 +89,9 @@ Vector2 Player::GetFirePosition() {
 
 void Player::Respawn() {
     position = initialPosition;
-    playerData->SetHealth(1);
+    playerData->SetHealth(playerData->GetMaxHealth());
 }
 
 void Player::DealDamage(int amount) {
-    //TODO deal actual damage
-    playerData->SetHealth(0);
+    playerData->SetHealth(playerData->GetHealth()-amount);
 }

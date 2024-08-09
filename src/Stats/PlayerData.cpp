@@ -15,3 +15,7 @@ int PlayerData::GetHealth() const {
 void PlayerData::SetHealth(int health) {
     this->health = health;
 }
+
+float PlayerData::GetMaxHealth() {
+    return maxHealth;
+}

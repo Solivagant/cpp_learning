@@ -10,12 +10,13 @@
 
 class CombatHandler {
 public:
-    CombatHandler(GameData* gameData, EntityResolver* entityResolver);
+    CombatHandler(GameData* gameData, PlayerData* playerData, EntityResolver* entityResolver);
     bool ProcessCombat(float deltaTime);
     void DealDamage(AEntity* x, int amount);
 private:
     EntityResolver* entityResolver;
     GameData* gameData;
+    PlayerData* playerData;
 };
 
 #endif //CPP_LEARNING_COMBATHANDLER_H

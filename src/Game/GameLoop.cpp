@@ -74,7 +74,7 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
 }
 
 Player* GameLoop::RegisterPlayer() {
-    Player *player = new Player(playerData, {(float) gameData->GetScreenWidth() / 2, (float) gameData->GetScreenHeight() / 2});
+    Player *player = new Player(playerData, gameData, {(float) gameData->GetScreenWidth() / 2, (float) gameData->GetScreenHeight() / 2});
     entityResolver->RegisterPlayer(player);
     return player;
 }
@@ -99,7 +99,7 @@ void SpawnRespawn(PlayerData* playerData, Player* player, EntityResolver* entity
     while (!WindowShouldClose()) {
         if(playerData->IsDead())
         {
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+            std::this_thread::sleep_for(std::chrono::milliseconds (500));
             player->Respawn();
         }
     }

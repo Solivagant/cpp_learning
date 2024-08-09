@@ -20,6 +20,7 @@ public:
     void MarkDying();
     void MarkForDeletion();
     bool GetToDelete() { return toDelete; }
+    bool GetIsDying() { return isDying; }
 
     void DealDamage(int amount) override;
 

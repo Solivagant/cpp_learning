@@ -30,8 +30,6 @@ void BasicEnemy::Move(float deltaTime, Player *player, std::vector<BasicEnemy *>
     Vector2 playerPosition = player->GetPosition();
     Vector2 directionToPlayer = Vector2Normalize(Vector2Subtract(playerPosition, position));
 
-//    if(Vector2Distance(playerPosition, position) > Radius)
-//    {
     position = Vector2Add(position, Vector2Scale(directionToPlayer, speed * deltaTime));
 
     for (BasicEnemy *enemy: enemies) {
@@ -40,12 +38,11 @@ void BasicEnemy::Move(float deltaTime, Player *player, std::vector<BasicEnemy *>
         }
 
         Vector2 enemyPosition = enemy->GetPosition();
-        if (Vector2Distance(enemyPosition, position) <= Radius * 2 + AvoidanceBonus) {
+        if (Vector2Distance(enemyPosition, position) <= Radius * 2 - 3) {
             Vector2 directionToEnemy = Vector2Normalize(Vector2Subtract(enemyPosition, position));
             position = Vector2Subtract(position, Vector2Scale(directionToEnemy, speed * deltaTime));
         }
     };
-//    }
 }
 
 void BasicEnemy::MarkDying() {
@@ -61,3 +58,5 @@ void BasicEnemy::DealDamage(int amount) {
     //TODO deal damage
     MarkDying();
 }
+
+
