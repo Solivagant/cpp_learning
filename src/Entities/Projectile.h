@@ -12,12 +12,12 @@ public:
     static const int Radius = 10;
     static const int AvoidanceBonus = 5;
 
-    constexpr static const float InitialSpeed = 200.0f;
+    constexpr static const float InitialSpeed = 420.0f;
     constexpr static const float TimeToLive = 1.0f;
 
     Projectile(Vector2 initialPosition, Vector2 targetPosition);
     void Draw() ;
-    void Move(float d);
+    void Move(int playerLevel, float d);
     void MarkForDeletion();
     bool GetToDelete() { return toDelete; }
 

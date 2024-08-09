@@ -26,7 +26,7 @@ void SpawnGenerateEnemies(PlayerData* playerData, GameData *gameData, EntityReso
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     while (gameData->GetIsRunning()) {
         if(!playerData->IsDead()){
-            entityResolver->GenerateEnemies(10);
+            entityResolver->GenerateEnemies(10*playerData->GetLevel());
             timePassed = 0;
         }
 

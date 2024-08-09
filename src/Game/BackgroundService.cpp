@@ -15,7 +15,7 @@ void BackgroundService::Init(int screenWidth, int screenHeight) {
 }
 
 void BackgroundService::Draw() {
-    DrawTexture(background, -(int) distance.x, -(int) distance.y, WHITE);
+    DrawTexture(background, -(int) distance.x, -(int) distance.y, LIGHTGRAY);
 }
 
 void BackgroundService::Unload() {

@@ -29,18 +29,20 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     entityResolver->InitRand(width, height);
     background->Init(width, height);
 
-    Player *player = RegisterPlayer();
+    Player* player = RegisterPlayer();
     waveSystem->StartWave();
 
     std::thread t1 = std::thread(SpawnRespawn, playerData, player, entityResolver);
-    bool playerDied = false;
 
     // Main game loop
     while (!WindowShouldClose()) {
         // Update
         float deltaTime = GetFrameTime();
-        player->Move(deltaTime);
-        MoveEnemies(deltaTime);
+
+        if (!playerData->IsDead()) {
+            player->Move(deltaTime);
+            MoveEnemies(deltaTime);
+        }
 
         BeginDrawing();
         ClearBackground(BLACK);
@@ -49,23 +51,21 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
         player->Draw();
 
         DrawEnemies(deltaTime);
-        playerDied = combatHandler->ProcessCombat(deltaTime);
-        if(playerDied)
-        {
-            entityResolver->DeleteEnemies();
+
+        if (!playerData->IsDead()) {
+            combatHandler->ProcessCombat(deltaTime);
         }
-        
+
         EndDrawing();
     }
 
-    playerData->SetHealth(0);
     gameData->SetIsRunning(false);
 
-    if(t1.joinable())
-    {
+    if (t1.joinable()) {
         t1.join();
     }
     waveSystem->Shutdown();
+    entityResolver->Shutdown();
 
     FreeMemory();
     CloseWindow(); // Close window and OpenGL context
@@ -74,33 +74,34 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
 }
 
 Player* GameLoop::RegisterPlayer() {
-    Player *player = new Player(playerData, gameData, {(float) gameData->GetScreenWidth() / 2, (float) gameData->GetScreenHeight() / 2});
+    Player* player = new Player(playerData, gameData,
+                                {(float) gameData->GetScreenWidth() / 2, (float) gameData->GetScreenHeight() / 2});
     entityResolver->RegisterPlayer(player);
     return player;
 }
 
 void GameLoop::MoveEnemies(float deltaTime) {
-    Player *player = entityResolver->GetPlayer();
-    if(playerData->IsDead()) return;
+    Player* player = entityResolver->GetPlayer();
+    if (playerData->IsDead()) return;
 
     auto enemies = entityResolver->GetEnemies();
-    for (BasicEnemy *enemy: enemies) {
-        enemy->Move(deltaTime, player, enemies);
+    for (BasicEnemy* enemy: enemies) {
+        enemy->Move(playerData->GetLevel(), deltaTime, player, enemies);
     }
 }
 
 void GameLoop::DrawEnemies(float deltaTime) {
-    for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
+    for (BasicEnemy* enemy: entityResolver->GetEnemies()) {
         enemy->Draw(deltaTime);
     }
 }
 
 void SpawnRespawn(PlayerData* playerData, Player* player, EntityResolver* entityResolver) {
     while (!WindowShouldClose()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds (500));
-        if(playerData->IsDead())
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds (500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        if (playerData->IsDead()) {
+            entityResolver->BlowUpEnemies();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
             player->Respawn();
         }
     }

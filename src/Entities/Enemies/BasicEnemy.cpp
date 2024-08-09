@@ -2,10 +2,8 @@
 // Created by Geraldo Nascimento on 05/08/2024.
 //
 
-#include <iostream>
 #include "BasicEnemy.h"
 #include "../../../lib/raymath.h"
-#include "../../../lib/raylib.h"
 
 BasicEnemy::BasicEnemy(Vector2 initialPosition) {
     position = initialPosition;
@@ -13,22 +11,37 @@ BasicEnemy::BasicEnemy(Vector2 initialPosition) {
 }
 
 void BasicEnemy::Draw(float deltaTime) {
-
     if (isDying) {
         timeDying += deltaTime;
-        colorAlpha -= 10.5f * timeDying;
+
+        if(isBlowingUp)
+        {
+            colorAlpha -= 2.5f * timeDying;
+            DrawCircleV(position, Radius, Fade(WHITE, colorAlpha));
+        }
+        else
+        {
+            colorAlpha -= 10.5f * timeDying;
+            DrawCircleV(position, Radius, Fade(RED, colorAlpha));
+        }
 
         if (colorAlpha <= 0) {
             MarkForDeletion();
         }
     }
-    DrawCircleV(position, Radius, Fade(RED, colorAlpha));
+    else
+    {
+        DrawCircleV(position, Radius, RED);
+    }
+
 }
 
 // Moves towards the player
-void BasicEnemy::Move(float deltaTime, Player *player, std::vector<BasicEnemy *> enemies) {
+void BasicEnemy::Move(int playerLevel, float deltaTime, Player *player, std::vector<BasicEnemy *> enemies) {
     Vector2 playerPosition = player->GetPosition();
     Vector2 directionToPlayer = Vector2Normalize(Vector2Subtract(playerPosition, position));
+
+    speed = InitialSpeed + playerLevel * 5;
 
     position = Vector2Add(position, Vector2Scale(directionToPlayer, speed * deltaTime));
 
@@ -45,9 +58,10 @@ void BasicEnemy::Move(float deltaTime, Player *player, std::vector<BasicEnemy *>
     };
 }
 
-void BasicEnemy::MarkDying() {
+void BasicEnemy::MarkDying(bool isBlowingUp) {
     timeDying = 0;
     isDying = true;
+    this->isBlowingUp = isBlowingUp;
 }
 
 void BasicEnemy::MarkForDeletion() {
@@ -56,7 +70,7 @@ void BasicEnemy::MarkForDeletion() {
 
 void BasicEnemy::DealDamage(int amount) {
     //TODO deal damage
-    MarkDying();
+    MarkDying(false);
 }
 
 

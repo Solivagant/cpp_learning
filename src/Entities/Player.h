@@ -34,6 +34,7 @@ private:
     bool IsInputUpHeld() const;
     bool IsInputDownHeld() const;
     GameData* gameData;
+    Texture texture;
 };
 
 #endif //CPP_LEARNING_PLAYER_H

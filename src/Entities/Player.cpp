@@ -4,6 +4,7 @@
 
 #include "../../lib/raylib.h"
 #include "Player.h"
+#include "../../lib/raymath.h"
 #include <sstream>
 
 static const float maxHoldTime = 1.5;
@@ -24,6 +25,8 @@ Player::Player(PlayerData* playerData, GameData* gameData, Vector2 initialPositi
     this->gameData = gameData;
     position = initialPosition;
     speed = InitialSpeed;
+
+    texture = LoadTexture("assets/kb.png");
 }
 
 void Player::Move(float deltaTime) {
@@ -64,35 +67,45 @@ void Player::Move(float deltaTime) {
 
 void Player::Draw() {
     if (!playerData->IsDead()) {
-        DrawCircleV(position, Radius, GREEN);
+        DrawTextureEx(texture, Vector2Subtract(position, Vector2{(float) texture.width / 2, (float) texture.height / 2}), 0,
+                      1.25f, WHITE);
+    }
+    else
+    {
+        DrawTextureEx(texture, Vector2Subtract(position, Vector2{(float) texture.width / 2, (float) texture.height / 2}), 0,
+                      1.25f, BLACK);
+    }
 
-        float healthSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetMaxHealth();
-        float xpSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetXPToNextLevel();
+    //DrawCircleV(position, Radius, GREEN);
 
-        std::stringstream stream;
-        stream << playerData->GetLevel();
-        auto string = stream.str();
-        const char* levelChar = string.c_str();
+    float healthSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetMaxHealth();
+    float xpSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetXPToNextLevel();
 
-        DrawRectangleV(Vector2{0, (float) gameData->GetScreenHeight() - 20},
-                       Vector2{(float) healthSegmentSize * (float) playerData->GetHealth(), 20}, GREEN);
-        DrawRectangleV(Vector2{0, 0}, Vector2{(float) xpSegmentSize * (float) playerData->GetXP(), 20}, ORANGE);
-        DrawRectangleV(Vector2{(float) gameData->GetScreenWidth() - 30, 0}, Vector2{50, 20}, BLACK);
-        DrawText(levelChar, (float) gameData->GetScreenWidth() - 20, 0, 20, WHITE);
+    std::stringstream stream;
+    stream << playerData->GetLevel();
+    auto string = stream.str();
+    const char* levelChar = string.c_str();
 
-        stream.clear();
-        stream << playerData->GetXP();
-        string = stream.str();
+    DrawRectangleV(Vector2{0, (float) gameData->GetScreenHeight() - 20},
+                   Vector2{(float) healthSegmentSize * (float) playerData->GetHealth(), 20}, GREEN);
+    DrawRectangleV(Vector2{0, 0}, Vector2{(float) xpSegmentSize * (float) playerData->GetXP(), 20}, ORANGE);
+    DrawRectangleV(Vector2{(float) gameData->GetScreenWidth() - 30, 0}, Vector2{50, 20}, BLACK);
+    DrawText(levelChar, (float) gameData->GetScreenWidth() - 20, 0, 20, WHITE);
+
+    stream.clear();
+    stream << playerData->GetXP();
+    string = stream.str();
 //        const char* xpChar = string.c_str();
 
 //        DrawRectangleV(Vector2{(float)gameData->GetScreenWidth() / 2 - 30, 0}, Vector2 {50, 20}, BLACK);
 //        DrawText(xpChar, (float)gameData->GetScreenWidth() / 2 - 10, 0, 15, WHITE);
-    }
 }
 
 bool Player::Fire(float deltaTime) {
+    if(playerData->IsDead()) return false;
+
     timeToFire += deltaTime;
-    if (timeToFire > timePerFire) {
+    if (timeToFire * playerData->GetLevel() > timePerFire) {
         timeToFire = 0;
         return true;
     }

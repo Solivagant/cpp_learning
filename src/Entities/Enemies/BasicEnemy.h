@@ -16,8 +16,8 @@ public:
 
     BasicEnemy(Vector2 initialPosition);
     void Draw(float deltaTime);
-    void Move(float deltaTime, Player* player, std::vector<BasicEnemy*> enemies);
-    void MarkDying();
+    void Move(int playerLevel, float deltaTime, Player* player, std::vector<BasicEnemy*> enemies);
+    void MarkDying(bool isBlowingUp);
     void MarkForDeletion();
     bool GetToDelete() { return toDelete; }
     bool GetIsDying() { return isDying; }
@@ -32,6 +32,7 @@ private:
     bool isDying;
     float colorAlpha = 1;
     float timeDying = 0;
+    bool isBlowingUp;
 };
 
 #endif //CPP_LEARNING_BASICENEMY_H

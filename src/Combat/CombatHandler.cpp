@@ -36,7 +36,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
         if(playerData->GetLevel() > 3)
         {
             auto *projectile3 = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{-10, 0}));
-            entityResolver->RegisterProjectile(projectile31);
+            entityResolver->RegisterProjectile(projectile3);
         }
     }
 
@@ -44,7 +44,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     bool projectileExpired = false;
 
     for (Projectile *projectile: entityResolver->GetProjectiles()) {
-        projectile->Move(deltaTime);
+        projectile->Move(playerData->GetLevel(), deltaTime);
         projectile->Draw();
 
         for (BasicEnemy *enemy: entityResolver->GetEnemies()) {

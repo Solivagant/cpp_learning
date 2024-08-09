@@ -12,9 +12,9 @@ Projectile::Projectile(Vector2 initialPosition, Vector2 targetPosition) {
     speed = InitialSpeed;
 }
 
-void Projectile::Move(float deltaTime) {
+void Projectile::Move(int playerLevel, float deltaTime) {
     timeAlive += deltaTime;
-    position = Vector2Add(position, Vector2Scale(targetDirection, speed * deltaTime));
+    position = Vector2Add(position, Vector2Scale(targetDirection, speed  * deltaTime));
 
     if(timeAlive > TimeToLive)
     {

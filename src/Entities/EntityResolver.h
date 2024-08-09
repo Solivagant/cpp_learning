@@ -21,22 +21,25 @@ public:
     void RegisterEnemy(BasicEnemy* enemy);
     Player* GetPlayer();
     std::vector<BasicEnemy*> GetEnemies();
-    std::vector<Projectile *> GetProjectiles();
+    std::vector<Projectile*> GetProjectiles();
     void DeleteEnemies();
     void CleanEnemies();
     void CleanProjectiles();
 
     void DeletePlayer();
-    void RegisterProjectile(Projectile *projectile);
+    void RegisterProjectile(Projectile* projectile);
     void FreeMemory();
     void GenerateEnemies(int count);
     void InitRand(int screenWidth, int screenHeight);
+    void BlowUpEnemies();
+    void Shutdown();
 private:
     std::vector<BasicEnemy*> enemies;
     std::vector<Projectile*> projectiles;
     Player* player;
     int screenWidth;
     int screenHeight;
+    std::thread t1;
 };
 
 #endif //CPP_LEARNING_ENTITYRESOLVER_H
