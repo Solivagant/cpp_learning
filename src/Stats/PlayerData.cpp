@@ -19,3 +19,15 @@ void PlayerData::SetHealth(int health) {
 float PlayerData::GetMaxHealth() {
     return maxHealth;
 }
+
+int PlayerData::GetXP() const {
+    return xp;
+}
+
+void PlayerData::SetXP(int xp) {
+    PlayerData::xp = xp;
+}
+
+int PlayerData::GetXPToNextLevel() {
+    return xpPerLevel;
+}

@@ -65,11 +65,12 @@ void Player::Draw() {
     if (!playerData->IsDead()) {
         DrawCircleV(position, Radius, GREEN);
 
-        float segmentSize = (float)gameData->GetScreenWidth() / playerData->GetMaxHealth();
+        float healthSegmentSize = (float)gameData->GetScreenWidth() / playerData->GetMaxHealth();
+        float xpSegmentSize = (float)gameData->GetScreenWidth() / playerData->GetXPToNextLevel();
 
-        DrawRectangleV(Vector2{0, (float)gameData->GetScreenHeight() - 20}, Vector2{(float)segmentSize * (float)playerData->GetHealth(), 20}, GREEN);
+        DrawRectangleV(Vector2{0, (float)gameData->GetScreenHeight() - 20}, Vector2{(float)healthSegmentSize * (float)playerData->GetHealth(), 20}, GREEN);
+        DrawRectangleV(Vector2{0, 0}, Vector2{(float)xpSegmentSize * (float)playerData->GetXP(), 20}, ORANGE);
     }
-
 }
 
 bool Player::Fire(float deltaTime) {

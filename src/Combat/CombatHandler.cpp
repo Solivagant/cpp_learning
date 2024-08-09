@@ -33,6 +33,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
             //They're hit if the distance between them is smaller than or equal to their added radii
             if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= BasicEnemy::Radius + Projectile::Radius) {
                 DealDamage(enemy, 1);
+                playerData->SetXP(playerData->GetXP()+1);
 
                 enemyWasHit = true;
                 projectile->MarkForDeletion();
