@@ -97,6 +97,7 @@ void GameLoop::DrawEnemies(float deltaTime) {
 
 void SpawnRespawn(PlayerData* playerData, Player* player, EntityResolver* entityResolver) {
     while (!WindowShouldClose()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds (500));
         if(playerData->IsDead())
         {
             std::this_thread::sleep_for(std::chrono::milliseconds (500));

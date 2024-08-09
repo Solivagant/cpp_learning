@@ -22,7 +22,6 @@ public:
     void Move(float deltaTime);
     void Draw();
     bool Fire(float deltaTime);
-    Vector2 GetFirePosition();
     void Respawn();
     void DealDamage(int amount) override;
 private:

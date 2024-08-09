@@ -14,7 +14,7 @@ private:
     int maxHealth = 10;
     int health = 10;
 
-    int xpPerLevel = 5;
+    int xpPerLevel = 10;
     int xp = 0;
 
     int level = 1;

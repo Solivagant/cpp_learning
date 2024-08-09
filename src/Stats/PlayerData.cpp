@@ -14,6 +14,11 @@ int PlayerData::GetHealth() const {
 
 void PlayerData::SetHealth(int health) {
     this->health = health;
+    if(IsDead())
+    {
+        SetXP(0);
+        level = 1;
+    }
 }
 
 float PlayerData::GetMaxHealth() {
@@ -26,7 +31,7 @@ int PlayerData::GetXP() const {
 
 void PlayerData::SetXP(int xp) {
     this->xp = xp;
-    if(xp >= xpPerLevel)
+    if(xp >= GetXPToNextLevel())
     {
         this->xp = 0;
         level++;
@@ -34,7 +39,7 @@ void PlayerData::SetXP(int xp) {
 }
 
 int PlayerData::GetXPToNextLevel() {
-    return xpPerLevel;
+    return xpPerLevel + level * 5 + level * 3;
 }
 
 int PlayerData::GetLevel() {

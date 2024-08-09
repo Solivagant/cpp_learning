@@ -66,33 +66,37 @@ void Player::Draw() {
     if (!playerData->IsDead()) {
         DrawCircleV(position, Radius, GREEN);
 
-        float healthSegmentSize = (float)gameData->GetScreenWidth() / playerData->GetMaxHealth();
-        float xpSegmentSize = (float)gameData->GetScreenWidth() / playerData->GetXPToNextLevel();
+        float healthSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetMaxHealth();
+        float xpSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetXPToNextLevel();
 
         std::stringstream stream;
         stream << playerData->GetLevel();
         auto string = stream.str();
-        const char* te = string.c_str();
-        DrawRectangleV(Vector2{0, (float)gameData->GetScreenHeight() - 20}, Vector2{(float)healthSegmentSize * (float)playerData->GetHealth(), 20}, GREEN);
-        DrawRectangleV(Vector2{0, 0}, Vector2{(float)xpSegmentSize * (float)playerData->GetXP(), 20}, ORANGE);
-        DrawRectangleV(Vector2{(float)gameData->GetScreenWidth() - 30, 0}, Vector2 {50, 20}, BLACK);
-        DrawText(te, (float)gameData->GetScreenWidth() - 20, 0, 20, WHITE);
+        const char* levelChar = string.c_str();
+
+        DrawRectangleV(Vector2{0, (float) gameData->GetScreenHeight() - 20},
+                       Vector2{(float) healthSegmentSize * (float) playerData->GetHealth(), 20}, GREEN);
+        DrawRectangleV(Vector2{0, 0}, Vector2{(float) xpSegmentSize * (float) playerData->GetXP(), 20}, ORANGE);
+        DrawRectangleV(Vector2{(float) gameData->GetScreenWidth() - 30, 0}, Vector2{50, 20}, BLACK);
+        DrawText(levelChar, (float) gameData->GetScreenWidth() - 20, 0, 20, WHITE);
+
+        stream.clear();
+        stream << playerData->GetXP();
+        string = stream.str();
+//        const char* xpChar = string.c_str();
+
+//        DrawRectangleV(Vector2{(float)gameData->GetScreenWidth() / 2 - 30, 0}, Vector2 {50, 20}, BLACK);
+//        DrawText(xpChar, (float)gameData->GetScreenWidth() / 2 - 10, 0, 15, WHITE);
     }
 }
 
 bool Player::Fire(float deltaTime) {
     timeToFire += deltaTime;
-    if (IsMouseButtonDown(0)) {
-        if (timeToFire > timePerFire) {
-            timeToFire = 0;
-            return true;
-        }
+    if (timeToFire > timePerFire) {
+        timeToFire = 0;
+        return true;
     }
     return false;
-}
-
-Vector2 Player::GetFirePosition() {
-    return GetMousePosition();
 }
 
 void Player::Respawn() {
@@ -101,5 +105,5 @@ void Player::Respawn() {
 }
 
 void Player::DealDamage(int amount) {
-    playerData->SetHealth(playerData->GetHealth()-amount);
+    playerData->SetHealth(playerData->GetHealth() - amount);
 }

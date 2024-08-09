@@ -15,8 +15,29 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     bool hasFired = player->Fire(deltaTime);
 
     if (hasFired) {
-        auto *projectile = new Projectile(player->GetPosition(), player->GetFirePosition());
+        //Projectile Down
+        auto *projectile = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{0, 10}));
         entityResolver->RegisterProjectile(projectile);
+
+        //Projectile Up
+        if(playerData->GetLevel() > 1)
+        {
+            auto *projectile1 = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{0, -10}));
+            entityResolver->RegisterProjectile(projectile1);
+        }
+
+        //Projectile Right
+        if(playerData->GetLevel() > 2)
+        {
+            auto *projectile2 = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{10, 0}));
+            entityResolver->RegisterProjectile(projectile2);
+        }
+
+        if(playerData->GetLevel() > 3)
+        {
+            auto *projectile3 = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{-10, 0}));
+            entityResolver->RegisterProjectile(projectile31);
+        }
     }
 
     bool enemyWasHit = false;
