@@ -21,7 +21,6 @@ void WaveSystem::Shutdown() {
     t1.join();
 }
 
-//TODO need to add thread safety, locks?
 void WaveSystem::SpawnGenerateEnemies() {
     int timePassed = 0;
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -30,6 +29,7 @@ void WaveSystem::SpawnGenerateEnemies() {
         std::unique_lock<std::mutex> lock(*vectorMutex);
 
         if (!playerData->IsDead()) {
+            //TODO the generate should be in this class
             entityResolver->GenerateEnemies(10 * playerData->GetLevel());
             timePassed = 0;
         }

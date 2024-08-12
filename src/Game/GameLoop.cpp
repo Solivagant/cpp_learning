@@ -34,6 +34,12 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
 
     std::thread t1 = std::thread(SpawnRespawn, playerData, player, entityResolver);
 
+    Camera2D camera = { 0 };
+    camera.target = player->GetPosition();
+    camera.offset = (Vector2){ width/2.0f, height/2.0f };
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
+
     // Main game loop
     while (!WindowShouldClose()) {
         // Update
@@ -44,7 +50,10 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
             MoveEnemies(deltaTime);
         }
 
+        camera.target = player->GetPosition();
+
         BeginDrawing();
+        BeginMode2D(camera);
         ClearBackground(BLACK);
 
         background->Draw();
@@ -55,6 +64,7 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
             combatHandler->ProcessCombat(deltaTime);
         }
 
+        EndMode2D();
         EndDrawing();
     }
 
