@@ -23,7 +23,7 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
 
     gameData->SetIsRunning(true);
 
-    InitWindow(width, height, "DOT SURVIVOR");
+    InitWindow(width, height, ".SURVIVORS");
     SetTargetFPS(60);
 
     entityResolver->InitRand(width, height);
@@ -48,9 +48,8 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
         ClearBackground(BLACK);
 
         background->Draw();
-        player->Draw();
-
         DrawEnemies(deltaTime);
+        player->Draw();
 
         if (!playerData->IsDead()) {
             combatHandler->ProcessCombat(deltaTime);

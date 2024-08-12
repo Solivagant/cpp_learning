@@ -67,16 +67,17 @@ void Player::Move(float deltaTime) {
 
 void Player::Draw() {
     if (!playerData->IsDead()) {
-        DrawTextureEx(texture, Vector2Subtract(position, Vector2{(float) texture.width / 2, (float) texture.height / 2}), 0,
-                      1.25f, WHITE);
+//        DrawTextureEx(texture, Vector2Subtract(position, Vector2{(float) texture.width / 2, (float) texture.height / 2}), 0,
+//                      1.25f, WHITE);
+        DrawCircleV(position, Radius, GREEN);
     }
     else
     {
-        DrawTextureEx(texture, Vector2Subtract(position, Vector2{(float) texture.width / 2, (float) texture.height / 2}), 0,
-                      1.25f, BLACK);
+//        DrawTextureEx(texture, Vector2Subtract(position, Vector2{(float) texture.width / 2, (float) texture.height / 2}), 0,
+//                      1.25f, BLACK);
+        DrawCircleV(position, Radius, BLACK);
     }
 
-    //DrawCircleV(position, Radius, GREEN);
 
     float healthSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetMaxHealth();
     float xpSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetXPToNextLevel();

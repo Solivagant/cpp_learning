@@ -7,6 +7,7 @@
 
 #include "../Entities/EntityResolver.h"
 #include "../Game/GameData.h"
+#include <map>
 
 class CombatHandler {
 public:
@@ -17,6 +18,11 @@ private:
     EntityResolver* entityResolver;
     GameData* gameData;
     PlayerData* playerData;
+
+    float currentAngle = 0;
+    float currentTime = 0;
+
+    std::map<AEntity*, std::map<Projectile*, char>> projectile_enemy_map;
 };
 
 #endif //CPP_LEARNING_COMBATHANDLER_H

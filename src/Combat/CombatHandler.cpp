@@ -3,6 +3,8 @@
 //
 
 #include "CombatHandler.h"
+#include <iostream>
+#include <sstream>
 
 CombatHandler::CombatHandler(GameData* gameData, PlayerData* playerData, EntityResolver *entityResolver) {
     this->gameData = gameData;
@@ -15,49 +17,113 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     bool hasFired = player->Fire(deltaTime);
 
     if (hasFired) {
+        currentTime += deltaTime;
+        if(currentTime > 1)
+        {
+            currentTime = 0;
+        }
+        currentAngle = 360 * currentTime;
+
         //Projectile Down
-        auto *projectile = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{0, 10}));
+        auto vector2 = Vector2{0, 10};
+
+        if(playerData->GetLevel() > 4)
+        {
+            vector2 = Vector2Rotate(vector2, currentAngle + 180);
+        }
+
+        auto *projectile = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), vector2));
+
         entityResolver->RegisterProjectile(projectile);
 
         //Projectile Up
         if(playerData->GetLevel() > 1)
         {
-            auto *projectile1 = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{0, -10}));
-            entityResolver->RegisterProjectile(projectile1);
+            auto vector2= Vector2{0, -10};
+            if(playerData->GetLevel() > 4)
+            {
+                vector2 = Vector2Rotate(vector2, currentAngle);
+            }
+
+            auto *projectile = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), vector2));
+            entityResolver->RegisterProjectile(projectile);
         }
 
         //Projectile Right
         if(playerData->GetLevel() > 2)
         {
-            auto *projectile2 = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{10, 0}));
-            entityResolver->RegisterProjectile(projectile2);
+            auto vector2 = Vector2{10, 0};
+            if(playerData->GetLevel() > 4)
+            {
+                vector2 = Vector2Rotate(vector2, currentAngle + 90);
+            }
+            auto *projectile = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), vector2));
+
+            entityResolver->RegisterProjectile(projectile);
         }
 
         if(playerData->GetLevel() > 3)
         {
-            auto *projectile3 = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), Vector2{-10, 0}));
-            entityResolver->RegisterProjectile(projectile3);
+            auto vector2 = Vector2{-10, 0};
+            if(playerData->GetLevel() > 4)
+            {
+                vector2 = Vector2Rotate(vector2, currentAngle + 270);
+            }
+            auto *projectile = new Projectile(player->GetPosition(), Vector2Add(player->GetPosition(), vector2));
+            entityResolver->RegisterProjectile(projectile);
         }
     }
 
     bool enemyWasHit = false;
     bool projectileExpired = false;
 
+    std::stringstream stream;
+    stream << "projectile count " << entityResolver->GetProjectiles().size();
+    std::string strin = stream.str();
+    std::cout << strin <<std::endl;
     for (Projectile *projectile: entityResolver->GetProjectiles()) {
         projectile->Move(playerData->GetLevel(), deltaTime);
         projectile->Draw();
 
+        //TODO needs to be thread safe
         for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
+            if(enemy->GetIsDying()) continue;
+
             Vector2 enemyPosition = enemy->GetPosition();
 
             //Delete hit enemies
             //They're hit if the distance between them is smaller than or equal to their added radii
             if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= BasicEnemy::Radius + Projectile::Radius) {
-                DealDamage(enemy, 1);
-                playerData->SetXP(playerData->GetXP()+1);
+                if(projectile_enemy_map.contains(enemy))
+                {
+                    std::cout << "contains enemy" << std::endl;
+                    if(projectile_enemy_map[enemy].contains(projectile))
+                    {
+                        std::cout << "contains projectile" << std::endl;
+                    }
+                    else
+                    {
+                        DealDamage(enemy, 1);
+                        if(enemy->GetIsDying())
+                        {
+                            playerData->SetXP(playerData->GetXP()+1);
+                        }
+                        enemyWasHit = true;
+                        projectile_enemy_map[enemy][projectile] = ' ';
+                    }
+                }
+                else
+                {
+                    DealDamage(enemy, 1);
+                    if(enemy->GetIsDying())
+                    {
+                        playerData->SetXP(playerData->GetXP()+1);
+                    }
+                    projectile_enemy_map[enemy] = std::map<Projectile*, char>();
+                    projectile_enemy_map[enemy][projectile] = ' ';
+                }
 
-                enemyWasHit = true;
-                projectile->MarkForDeletion();
+//                projectile->MarkForDeletion();
             }
 
             if (enemy->GetToDelete()) {
@@ -78,7 +144,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
             DealDamage(player, 1);
 
             //Kill enemy as well
-            DealDamage(enemy, 1);
+            enemy->KillFromHittingPlayer();
             enemyWasHit = true;
             if(playerData->IsDead())
             {

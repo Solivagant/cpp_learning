@@ -146,7 +146,7 @@ void SpawnBlowUpEnemies(Vector2 position, std::vector<BasicEnemy*> enemies, Enti
 
     for (auto enemy: enemies) {
         enemy->MarkDying(true);
-        std::this_thread::sleep_for(std::chrono::milliseconds(25));
+        std::this_thread::sleep_for(std::chrono::milliseconds(enemies.size() / 10));
     }
     entityResolver->DeleteEnemies();
 }

@@ -39,7 +39,7 @@ void PlayerData::SetXP(int xp) {
 }
 
 int PlayerData::GetXPToNextLevel() {
-    return xpPerLevel + level * 5 + level * 3;
+    return xpPerLevel + level * 20 + level * 3;
 }
 
 int PlayerData::GetLevel() {
