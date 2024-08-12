@@ -3,6 +3,8 @@ project(cpp_learning)
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_subdirectory(lib/rxcpp)
+
 add_executable(cpp_learning src/main.cpp
         src/Learning/Learning.cpp
         src/Learning/Learning.h
@@ -48,6 +50,8 @@ add_executable(cpp_learning src/main.cpp
         src/ServiceLocator.cpp
         src/ServiceLocator.h
 )
+
+target_link_libraries(cpp_learning rxcpp)
 
 # Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows
 target_link_libraries(cpp_learning "-framework CoreVideo")
