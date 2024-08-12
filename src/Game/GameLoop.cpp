@@ -24,7 +24,7 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     SetTargetFPS(60);
 
     entityResolver->InitRand(width, height);
-    background->Init(width, height);
+    background->Init(width, height, playerData);
 
     player = RegisterPlayer();
     waveSystem->StartWave();
@@ -55,12 +55,14 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
         ClearBackground(BLACK);
 
         background->Draw();
+
         DrawEnemies(deltaTime);
         player->Draw();
 
         if (!playerData->IsDead()) {
             combatHandler->ProcessCombat(deltaTime);
         }
+
 
         EndMode2D();
         EndDrawing();
