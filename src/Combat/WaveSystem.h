@@ -15,6 +15,7 @@ public:
     void StartWave();
     void Shutdown();
     void SpawnGenerateEnemies();
+    void GenerateEnemies(int count);
 
 private:
     EntityResolver* entityResolver;
@@ -22,5 +23,8 @@ private:
     PlayerData* playerData;
     std::thread t1;
     std::shared_ptr<std::mutex> vectorMutex;
+    std::random_device rd;
+    std::mt19937 e{rd()};
+    Vector2 playerPos;
 };
 #endif //CPP_LEARNING_WAVESYSTEM_H

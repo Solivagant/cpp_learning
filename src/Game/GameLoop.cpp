@@ -47,6 +47,7 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
 
         if (!playerData->IsDead()) {
             player->Move(deltaTime);
+            playerData->UpdatePosition(player->GetPosition());
             MoveEnemies(deltaTime);
         }
 

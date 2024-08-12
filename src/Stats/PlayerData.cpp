@@ -4,6 +4,25 @@
 
 #include "PlayerData.h"
 
+//PlayerData::PlayerData() {
+////    rxcpp::subjects::subject<int> subject;
+////    auto simpleObservable = subject.get_observable();
+////
+////    simpleObservable.subscribe([](int i) {
+////        std::cout << "SIMPLE OBSERVABLE " << i << "\n";
+////    });
+////
+////    auto simpleSubscriber = subject.get_subscriber();
+////    simpleSubscriber.on_next(10);
+////    simpleSubscriber.on_next(12);
+
+//}
+
+void PlayerData::UpdatePosition(Vector2 position)
+{
+    positionSubscriber.on_next(position);
+}
+
 bool PlayerData::IsDead() {
     return health <= 0;
 }
@@ -14,8 +33,7 @@ int PlayerData::GetHealth() const {
 
 void PlayerData::SetHealth(int health) {
     this->health = health;
-    if(IsDead())
-    {
+    if (IsDead()) {
         SetXP(0);
         level = 1;
     }
@@ -31,8 +49,7 @@ int PlayerData::GetXP() const {
 
 void PlayerData::SetXP(int xp) {
     this->xp = xp;
-    if(xp >= GetXPToNextLevel())
-    {
+    if (xp >= GetXPToNextLevel()) {
         this->xp = 0;
         level++;
     }
@@ -44,4 +61,8 @@ int PlayerData::GetXPToNextLevel() {
 
 int PlayerData::GetLevel() {
     return level;
+}
+
+rxcpp::observable<Vector2>* PlayerData::GetPositionObservable() {
+    return &observable;
 }
