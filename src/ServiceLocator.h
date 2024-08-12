@@ -9,6 +9,10 @@
 #include "Combat/WaveSystem.h"
 #include "Game/GameData.h"
 #include "Game/BackgroundService.h"
+#include <map>
+#include <thread>
+#include <mutex>
+
 
 class ServiceLocator {
 public:
@@ -26,6 +30,7 @@ private:
     CombatHandler* combatHandler;
     EntityResolver* entityResolver;
     PlayerData* playerData;
+    std::shared_ptr<std::mutex> vectorMutexPtr;
 };
 
 #endif //CPP_LEARNING_SERVICELOCATOR_H

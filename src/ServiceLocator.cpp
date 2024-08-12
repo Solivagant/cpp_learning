@@ -5,12 +5,18 @@
 #include "ServiceLocator.h"
 
 void ServiceLocator::Init() {
+    //make_unique creates an instance and wraps it in a pointer
+    //make_shared
+    //shared_ptr provide limited garbage collection facility
+    //it owns the pointer and shares that ownership
+    vectorMutexPtr = std::make_shared<std::mutex>();
+
     gameData = new GameData(1024,760);
     playerData = new PlayerData();
     entityResolver = new EntityResolver();
 
-    combatHandler = new CombatHandler(gameData, playerData, entityResolver);
-    waveSystem = new WaveSystem(playerData, gameData, entityResolver);
+    combatHandler = new CombatHandler(vectorMutexPtr, gameData, playerData, entityResolver);
+    waveSystem = new WaveSystem(vectorMutexPtr, playerData, gameData, entityResolver);
     backgroundService = new BackgroundService();
 }
 

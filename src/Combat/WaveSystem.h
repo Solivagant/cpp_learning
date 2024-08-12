@@ -10,15 +10,17 @@
 
 class WaveSystem {
 public:
-    WaveSystem(PlayerData* playerData, GameData *gameData, EntityResolver *entityResolver);
+    WaveSystem(std::shared_ptr<std::mutex> &vectorMutex, PlayerData* playerData, GameData* gameData,
+               EntityResolver* entityResolver);
     void StartWave();
     void Shutdown();
-private:
-    EntityResolver *entityResolver;
-    GameData *gameData;
-    PlayerData * playerData;
-    std::thread t1;
-    bool* keepRunning;
-};
+    void SpawnGenerateEnemies();
 
+private:
+    EntityResolver* entityResolver;
+    GameData* gameData;
+    PlayerData* playerData;
+    std::thread t1;
+    std::shared_ptr<std::mutex> vectorMutex;
+};
 #endif //CPP_LEARNING_WAVESYSTEM_H

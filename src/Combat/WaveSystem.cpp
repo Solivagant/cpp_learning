@@ -4,41 +4,46 @@
 
 #include "WaveSystem.h"
 
-void SpawnGenerateEnemies(PlayerData* playerData, GameData *gameData, EntityResolver *entityResolver);
-
-WaveSystem::WaveSystem(PlayerData* playerData, GameData *gameData, EntityResolver *entityResolver) {
+//TODO move the threads to be class functions
+WaveSystem::WaveSystem(std::shared_ptr<std::mutex> &vectorMutex, PlayerData* playerData, GameData* gameData,
+                       EntityResolver* entityResolver) {
     this->entityResolver = entityResolver;
     this->gameData = gameData;
     this->playerData = playerData;
-    keepRunning = new bool(true);
+    this->vectorMutex = vectorMutex;
 }
 
 void WaveSystem::StartWave() {
-    t1 = std::thread(SpawnGenerateEnemies, playerData, gameData, entityResolver);
+    t1 = std::thread(&WaveSystem::SpawnGenerateEnemies, this);
 }
 
 void WaveSystem::Shutdown() {
     t1.join();
 }
 
-void SpawnGenerateEnemies(PlayerData* playerData, GameData *gameData, EntityResolver *entityResolver) {
+//TODO need to add thread safety, locks?
+void WaveSystem::SpawnGenerateEnemies() {
     int timePassed = 0;
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     while (gameData->GetIsRunning()) {
-        if(!playerData->IsDead()){
-            entityResolver->GenerateEnemies(10*playerData->GetLevel());
+
+        std::unique_lock<std::mutex> lock(*vectorMutex);
+
+        if (!playerData->IsDead()) {
+            entityResolver->GenerateEnemies(10 * playerData->GetLevel());
             timePassed = 0;
         }
 
-        if(playerData->IsDead())
-        {
+        if (playerData->IsDead()) {
             timePassed = 5000;
         }
+
+        lock.unlock();
 
         while (!playerData->IsDead() && timePassed < 5000 && gameData->GetIsRunning()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             timePassed += 500;
         }
-    }
 
+    }
 }

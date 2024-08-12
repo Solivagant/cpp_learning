@@ -6,13 +6,16 @@
 #include <iostream>
 #include <sstream>
 
-CombatHandler::CombatHandler(GameData* gameData, PlayerData* playerData, EntityResolver *entityResolver) {
+CombatHandler::CombatHandler(std::shared_ptr<std::mutex>& vectorMutex, GameData* gameData, PlayerData* playerData, EntityResolver *entityResolver) {
     this->gameData = gameData;
     this->playerData = playerData;
     this->entityResolver = entityResolver;
+    this->vectorMutex = vectorMutex;
 }
 
 bool CombatHandler::ProcessCombat(float deltaTime) {
+    std::lock_guard<std::mutex> lock(*vectorMutex);
+
     Player *player = entityResolver->GetPlayer();
     bool hasFired = player->Fire(deltaTime);
 
@@ -77,10 +80,6 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     bool enemyWasHit = false;
     bool projectileExpired = false;
 
-    std::stringstream stream;
-    stream << "projectile count " << entityResolver->GetProjectiles().size();
-    std::string strin = stream.str();
-    std::cout << strin <<std::endl;
     for (Projectile *projectile: entityResolver->GetProjectiles()) {
         projectile->Move(playerData->GetLevel(), deltaTime);
         projectile->Draw();
@@ -96,12 +95,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
             if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= BasicEnemy::Radius + Projectile::Radius) {
                 if(projectile_enemy_map.contains(enemy))
                 {
-                    std::cout << "contains enemy" << std::endl;
-                    if(projectile_enemy_map[enemy].contains(projectile))
-                    {
-                        std::cout << "contains projectile" << std::endl;
-                    }
-                    else
+                    if(!projectile_enemy_map[enemy].contains(projectile))
                     {
                         DealDamage(enemy, 1);
                         if(enemy->GetIsDying())
@@ -122,8 +116,6 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
                     projectile_enemy_map[enemy] = std::map<Projectile*, char>();
                     projectile_enemy_map[enemy][projectile] = ' ';
                 }
-
-//                projectile->MarkForDeletion();
             }
 
             if (enemy->GetToDelete()) {

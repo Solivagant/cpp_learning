@@ -8,16 +8,19 @@
 #include "../Entities/EntityResolver.h"
 #include "../Game/GameData.h"
 #include <map>
+#include <thread>
+#include <mutex>
 
 class CombatHandler {
 public:
-    CombatHandler(GameData* gameData, PlayerData* playerData, EntityResolver* entityResolver);
+    CombatHandler(std::shared_ptr<std::mutex>& vectorMutex, GameData* gameData, PlayerData* playerData, EntityResolver* entityResolver);
     bool ProcessCombat(float deltaTime);
     void DealDamage(AEntity* x, int amount);
 private:
     EntityResolver* entityResolver;
     GameData* gameData;
     PlayerData* playerData;
+    std::shared_ptr<std::mutex> vectorMutex;
 
     float currentAngle = 0;
     float currentTime = 0;
