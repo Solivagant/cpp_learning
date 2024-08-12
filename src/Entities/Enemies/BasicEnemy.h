@@ -24,9 +24,13 @@ public:
 
     void DealDamage(int amount) override;
 
+    void KillFromHittingPlayer();
 private:
-    int health;
-    int maxHealth;
+    int health = 3;
+public:
+    int GetHealth() const;
+private:
+    int maxHealth = 5;
 
     bool toDelete;
     bool isDying;

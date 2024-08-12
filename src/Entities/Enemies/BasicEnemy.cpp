@@ -31,7 +31,9 @@ void BasicEnemy::Draw(float deltaTime) {
     }
     else
     {
-        DrawCircleV(position, Radius, RED);
+        //simple calc for now hardcoded to 5 health
+        DrawCircleV(position, Radius, BLACK);
+        DrawCircleV(position, Radius, Fade(RED, (float)health * 33 / 100));
     }
 
 }
@@ -69,8 +71,18 @@ void BasicEnemy::MarkForDeletion() {
 }
 
 void BasicEnemy::DealDamage(int amount) {
-    //TODO deal damage
+    health = health - amount;
+    if(health <= 0) {
+        MarkDying(false);
+    }
+}
+
+void BasicEnemy::KillFromHittingPlayer() {
     MarkDying(false);
+}
+
+int BasicEnemy::GetHealth() const {
+    return health;
 }
 
 
