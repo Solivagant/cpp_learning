@@ -30,7 +30,7 @@ private:
     CombatHandler* combatHandler;
     EntityResolver* entityResolver;
     PlayerData* playerData;
-    std::shared_ptr<std::mutex> vectorMutexPtr;
+    std::shared_ptr<std::mutex> mutex;
 };
 
 #endif //CPP_LEARNING_SERVICELOCATOR_H

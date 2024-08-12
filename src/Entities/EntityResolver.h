@@ -8,19 +8,19 @@
 #include <random>
 #include <vector>
 #include "Player.h"
-#include "Enemies/BasicEnemy.h"
+#include "Enemies/EnemyA.h"
 #include "Projectile.h"
 #include "../../lib/raylib.h"
 #include "../../lib/raymath.h"
 
-// Forward declaration of BasicEnemy
+// Forward declaration of EnemyA
 
 class EntityResolver {
 public:
     void RegisterPlayer(Player* player);
-    void RegisterEnemy(BasicEnemy* enemy);
+    void RegisterEnemy(EnemyA* enemy);
     Player* GetPlayer();
-    std::vector<BasicEnemy*> GetEnemies();
+    std::vector<EnemyA*> GetEnemies();
     std::vector<Projectile*> GetProjectiles();
     void DeleteEnemies();
     void CleanEnemies();
@@ -29,12 +29,10 @@ public:
     void DeletePlayer();
     void RegisterProjectile(Projectile* projectile);
     void FreeMemory();
-    void GenerateEnemies(int count);
     void InitRand(int screenWidth, int screenHeight);
-    void BlowUpEnemies();
     void Shutdown();
 private:
-    std::vector<BasicEnemy*> enemies;
+    std::vector<EnemyA*> enemies;
     std::vector<Projectile*> projectiles;
     Player* player;
     int screenWidth;

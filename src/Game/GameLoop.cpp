@@ -7,9 +7,6 @@
 
 #include "GameLoop.h"
 
-//Declare functions to run in thread
-void SpawnRespawn(PlayerData* playerData, Player* player, EntityResolver* entityResolver);
-
 int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     entityResolver = serviceLocator->GetEntityResolver();
     gameData = serviceLocator->GetGameData();
@@ -29,10 +26,10 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     entityResolver->InitRand(width, height);
     background->Init(width, height);
 
-    Player* player = RegisterPlayer();
+    player = RegisterPlayer();
     waveSystem->StartWave();
 
-    std::thread t1 = std::thread(SpawnRespawn, playerData, player, entityResolver);
+    std::thread t1 = std::thread(&GameLoop::SpawnRespawn, this);
 
     Camera2D camera = { 0 };
     camera.target = player->GetPosition();
@@ -78,7 +75,8 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     entityResolver->Shutdown();
 
     FreeMemory();
-    CloseWindow(); // Close window and OpenGL context
+    // Close window and OpenGL context
+    CloseWindow();
 
     return 0;
 }
@@ -95,22 +93,22 @@ void GameLoop::MoveEnemies(float deltaTime) {
     if (playerData->IsDead()) return;
 
     auto enemies = entityResolver->GetEnemies();
-    for (BasicEnemy* enemy: enemies) {
+    for (EnemyA* enemy: enemies) {
         enemy->Move(playerData->GetLevel(), deltaTime, player, enemies);
     }
 }
 
 void GameLoop::DrawEnemies(float deltaTime) {
-    for (BasicEnemy* enemy: entityResolver->GetEnemies()) {
+    for (EnemyA* enemy: entityResolver->GetEnemies()) {
         enemy->Draw(deltaTime);
     }
 }
 
-void SpawnRespawn(PlayerData* playerData, Player* player, EntityResolver* entityResolver) {
+void GameLoop::SpawnRespawn() {
     while (!WindowShouldClose()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         if (playerData->IsDead()) {
-            entityResolver->BlowUpEnemies();
+            waveSystem->BlowUpEnemies();
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             player->Respawn();
         }

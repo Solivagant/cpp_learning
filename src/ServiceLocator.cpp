@@ -9,14 +9,14 @@ void ServiceLocator::Init() {
     //make_shared
     //shared_ptr provide limited garbage collection facility
     //it owns the pointer and shares that ownership
-    vectorMutexPtr = std::make_shared<std::mutex>();
+    mutex = std::make_shared<std::mutex>();
 
     gameData = new GameData(1024,760);
     playerData = new PlayerData();
     entityResolver = new EntityResolver();
 
-    combatHandler = new CombatHandler(vectorMutexPtr, gameData, playerData, entityResolver);
-    waveSystem = new WaveSystem(vectorMutexPtr, playerData, gameData, entityResolver);
+    combatHandler = new CombatHandler(mutex, gameData, playerData, entityResolver);
+    waveSystem = new WaveSystem(mutex, playerData, gameData, entityResolver);
     backgroundService = new BackgroundService();
 }
 

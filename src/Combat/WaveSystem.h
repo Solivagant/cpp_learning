@@ -10,21 +10,31 @@
 
 class WaveSystem {
 public:
-    WaveSystem(std::shared_ptr<std::mutex> &vectorMutex, PlayerData* playerData, GameData* gameData,
+    WaveSystem(std::shared_ptr<std::mutex> &mutex, PlayerData* playerData, GameData* gameData,
                EntityResolver* entityResolver);
     void StartWave();
     void Shutdown();
     void SpawnGenerateEnemies();
     void GenerateEnemies(int count);
+    void BlowUpEnemies();
 
 private:
+    constexpr static const float deviation = 20.0f;
+    constexpr static const int spawnSleepMs = 500;
+    constexpr static const int spawnIntervalMs = 5000;
+    constexpr static const int enemyCountPerLevel = 10;
+
     EntityResolver* entityResolver;
     GameData* gameData;
     PlayerData* playerData;
-    std::thread t1;
-    std::shared_ptr<std::mutex> vectorMutex;
+    std::thread tWave;
+    std::thread tBlowUp;
+    std::shared_ptr<std::mutex> mutex;
     std::random_device rd;
     std::mt19937 e{rd()};
     Vector2 playerPos;
+
+    void SpawnBlowUpEnemies();
+
 };
 #endif //CPP_LEARNING_WAVESYSTEM_H

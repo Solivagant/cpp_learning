@@ -6,15 +6,15 @@
 #include <iostream>
 #include <sstream>
 
-CombatHandler::CombatHandler(std::shared_ptr<std::mutex>& vectorMutex, GameData* gameData, PlayerData* playerData, EntityResolver *entityResolver) {
+CombatHandler::CombatHandler(std::shared_ptr<std::mutex>& mutex, GameData* gameData, PlayerData* playerData, EntityResolver *entityResolver) {
     this->gameData = gameData;
     this->playerData = playerData;
     this->entityResolver = entityResolver;
-    this->vectorMutex = vectorMutex;
+    this->mutex = mutex;
 }
 
 bool CombatHandler::ProcessCombat(float deltaTime) {
-    std::lock_guard<std::mutex> lock(*vectorMutex);
+    std::lock_guard<std::mutex> lock(*mutex);
 
     Player *player = entityResolver->GetPlayer();
     bool hasFired = player->Fire(deltaTime);
@@ -85,14 +85,14 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
         projectile->Draw();
 
         //TODO needs to be thread safe
-        for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
+        for (EnemyA *enemy: entityResolver->GetEnemies()) {
             if(enemy->GetIsDying()) continue;
 
             Vector2 enemyPosition = enemy->GetPosition();
 
             //Delete hit enemies
             //They're hit if the distance between them is smaller than or equal to their added radii
-            if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= BasicEnemy::Radius + Projectile::Radius) {
+            if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= EnemyA::Radius + Projectile::Radius) {
                 if(projectile_enemy_map.contains(enemy))
                 {
                     if(!projectile_enemy_map[enemy].contains(projectile))
@@ -128,10 +128,10 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
         }
     }
 
-    for (BasicEnemy *enemy: entityResolver->GetEnemies()) {
+    for (EnemyA *enemy: entityResolver->GetEnemies()) {
         Vector2 enemyPosition = enemy->GetPosition();
 
-        if (!enemy->GetIsDying() && Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <= BasicEnemy::Radius + Player::Radius) {
+        if (!enemy->GetIsDying() && Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <= EnemyA::Radius + Player::Radius) {
             //Player hit
             DealDamage(player, 1);
 

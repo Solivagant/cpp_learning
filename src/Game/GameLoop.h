@@ -25,11 +25,14 @@ private:
 
     BackgroundService* background;
     PlayerData* playerData;
+    Player *player;
 
     void DrawEnemies(float deltaTime);
     void MoveEnemies(float deltaTime);
     Player* RegisterPlayer();
     void FreeMemory();
+
+    void SpawnRespawn();
 };
 
 #endif //CPP_LEARNING_GAMELOOP_H

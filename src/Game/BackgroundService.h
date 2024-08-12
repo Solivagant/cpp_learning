@@ -13,8 +13,6 @@ public:
     void Draw();
     void Unload();
 private:
-    int screenWidth;
-    int screenHeight;
     Texture2D background;
     Vector2 distance;
 };

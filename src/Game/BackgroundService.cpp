@@ -5,9 +5,6 @@
 #include "BackgroundService.h"
 
 void BackgroundService::Init(int screenWidth, int screenHeight) {
-    this->screenWidth = screenWidth;
-    this->screenHeight = screenHeight;
-
     background = LoadTexture("assets/background.png");
     distance = CalculateCenter(Vector2{(float) background.width, (float) background.height},
                                Vector2{(float) screenWidth, (float) screenHeight});
