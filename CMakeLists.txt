@@ -6,20 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(lib/rxcpp)
 
 add_executable(cpp_learning src/main.cpp
-        src/Learning/Learning.cpp
-        src/Learning/Learning.h
-        src/VHS/VideoClub.cpp
-        src/VHS/VideoClub.h
-        src/VHS/Rental.cpp
-        src/VHS/User.cpp
-        src/VHS/User.h
-        src/VHS/Video.cpp
-        src/VHS/Video.h
-        src/VHS/Registration.cpp
-        src/VHS/Registration.h
         lib/raylib.h
         lib/raymath.h
-        src/Learning/learningMain.cpp
         src/Game/GameLoop.cpp
         src/Game/GameLoop.h
         src/Util/MathUtil.cpp
@@ -27,8 +15,8 @@ add_executable(cpp_learning src/main.cpp
         src/Entities/Player.cpp
         src/Entities/Player.h
         src/Entities/AEntity.h
-        src/Entities/Enemies/BasicEnemy.cpp
-        src/Entities/Enemies/BasicEnemy.h
+        src/Entities/Enemies/EnemyA.cpp
+        src/Entities/Enemies/EnemyA.h
         src/Entities/EntityResolver.cpp
         src/Entities/EntityResolver.h
         src/Entities/Projectile.cpp
@@ -41,8 +29,8 @@ add_executable(cpp_learning src/main.cpp
         src/Stats/PlayerData.h
         src/Game/GameData.cpp
         src/Game/GameData.h
-        src/Entities/Enemies/LargeEnemy.cpp
-        src/Entities/Enemies/LargeEnemy.h
+        src/Entities/Enemies/EnemyB.cpp
+        src/Entities/Enemies/EnemyB.h
         src/Combat/WaveSystem.cpp
         src/Combat/WaveSystem.h
         src/Combat/CombatHandler.cpp
