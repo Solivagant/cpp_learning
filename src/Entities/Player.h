@@ -35,6 +35,7 @@ private:
     bool IsInputDownHeld() const;
     GameData* gameData;
     Texture texture;
+    void DrawUI();
 };
 
 #endif //CPP_LEARNING_PLAYER_H
