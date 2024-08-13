@@ -4,23 +4,9 @@
 
 #include "PlayerData.h"
 
-//PlayerData::PlayerData() {
-////    rxcpp::subjects::subject<int> subject;
-////    auto simpleObservable = subject.get_observable();
-////
-////    simpleObservable.subscribe([](int i) {
-////        std::cout << "SIMPLE OBSERVABLE " << i << "\n";
-////    });
-////
-////    auto simpleSubscriber = subject.get_subscriber();
-////    simpleSubscriber.on_next(10);
-////    simpleSubscriber.on_next(12);
-
-//}
-
 void PlayerData::UpdatePosition(Vector2 position)
 {
-    positionSubscriber.on_next(position);
+    this->position = position;
 }
 
 bool PlayerData::IsDead() {
@@ -63,6 +49,6 @@ int PlayerData::GetLevel() {
     return level;
 }
 
-rxcpp::observable<Vector2>* PlayerData::GetPositionObservable() {
-    return &observable;
+Vector2 PlayerData::GetPosition() {
+    return position;
 }

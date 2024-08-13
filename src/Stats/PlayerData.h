@@ -5,7 +5,6 @@
 #ifndef CPP_LEARNING_PLAYERDATA_H
 #define CPP_LEARNING_PLAYERDATA_H
 
-#include "rxcpp/rx.hpp"
 #include "../../lib/raylib.h"
 
 class PlayerData {
@@ -14,6 +13,7 @@ public:
     int GetHealth() const;
     void SetHealth(int health);
     void UpdatePosition(Vector2 position);
+    Vector2 GetPosition();
 
 private:
     int maxHealth = 10;
@@ -23,12 +23,10 @@ private:
     int xp = 0;
 
     int level = 1;
-    rxcpp::subjects::subject<Vector2> position;
-    rxcpp::subscriber<Vector2> positionSubscriber = position.get_subscriber();
-    rxcpp::observable<Vector2> observable = position.get_observable();
+
+    Vector2 position;
 
 public:
-    rxcpp::observable<Vector2>* GetPositionObservable();
     int GetXPToNextLevel();
     int GetXP() const;
     void SetXP(int xp);

@@ -18,8 +18,9 @@ private:
     Texture2D background2;
     Vector2 distance;
     Vector2 playerPos;
-    int screenWidth;
-    int screenHeight;
+    int backgroundWidth;
+    int backgroundHeight;
+    PlayerData* playerData;
 };
 
 #endif //CPP_LEARNING_BACKGROUNDSERVICE_H
