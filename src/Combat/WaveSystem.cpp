@@ -11,12 +11,6 @@ WaveSystem::WaveSystem(std::shared_ptr<std::mutex> &mutex, PlayerData* playerDat
     this->gameData = gameData;
     this->playerData = playerData;
     this->mutex = mutex;
-
-    const rxcpp::observable<Vector2> observable = *playerData->GetPositionObservable();
-    observable.subscribe(
-            [this](Vector2 playerPos) {
-                this->playerPos = playerPos;
-            });
 }
 
 void WaveSystem::StartWave() {
@@ -34,6 +28,8 @@ void WaveSystem::BlowUpEnemies() {
 
 void WaveSystem::SpawnBlowUpEnemies() {
     auto enemies = entityResolver->GetEnemies();
+
+    Vector2 playerPos = playerData->GetPosition();
 
     //Sort enemies by position closest to player
     std::sort(enemies.begin(), enemies.end(), [&](AEntity* a, AEntity* b) {
@@ -73,6 +69,8 @@ void WaveSystem::SpawnGenerateEnemies() {
 }
 
 void WaveSystem::GenerateEnemies(int count) {
+    Vector2 playerPos = playerData->GetPosition();
+
     int up = playerPos.y - gameData->GetScreenHeight() / 2 - deviation * 2;
     int down = playerPos.y + gameData->GetScreenHeight() / 2 + deviation * 2;
     int left = playerPos.x - gameData->GetScreenWidth() / 2 - deviation * 2;

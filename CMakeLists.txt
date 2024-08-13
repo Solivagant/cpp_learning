@@ -3,8 +3,6 @@ project(cpp_learning)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(lib/rxcpp)
-
 add_executable(cpp_learning src/main.cpp
         lib/raylib.h
         lib/raymath.h
@@ -23,8 +21,6 @@ add_executable(cpp_learning src/main.cpp
         src/Entities/Projectile.h
         src/Game/BackgroundService.cpp
         src/Game/BackgroundService.h
-        src/Abilities/HealthRegen.cpp
-        src/Abilities/HealthRegen.h
         src/Stats/PlayerData.cpp
         src/Stats/PlayerData.h
         src/Game/GameData.cpp
@@ -38,8 +34,6 @@ add_executable(cpp_learning src/main.cpp
         src/ServiceLocator.cpp
         src/ServiceLocator.h
 )
-
-target_link_libraries(cpp_learning rxcpp)
 
 # Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows
 target_link_libraries(cpp_learning "-framework CoreVideo")

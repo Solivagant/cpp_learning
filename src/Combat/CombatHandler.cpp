@@ -97,7 +97,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
                 {
                     if(!projectile_enemy_map[enemy].contains(projectile))
                     {
-                        DealDamage(enemy, 1);
+                        enemy->DealDamage(1);
                         if(enemy->GetIsDying())
                         {
                             playerData->SetXP(playerData->GetXP()+1);
@@ -108,7 +108,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
                 }
                 else
                 {
-                    DealDamage(enemy, 1);
+                    enemy->DealDamage(1);
                     if(enemy->GetIsDying())
                     {
                         playerData->SetXP(playerData->GetXP()+1);
@@ -133,7 +133,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
 
         if (!enemy->GetIsDying() && Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <= EnemyA::Radius + Player::Radius) {
             //Player hit
-            DealDamage(player, 1);
+            player->DealDamage(1);
 
             //Kill enemy as well
             enemy->KillFromHittingPlayer();
@@ -154,10 +154,6 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     }
 
     return false;
-}
-
-void CombatHandler::DealDamage(AEntity* x, int amount) {
-    x->DealDamage(amount);
 }
 
 

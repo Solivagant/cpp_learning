@@ -32,7 +32,6 @@ private:
     std::shared_ptr<std::mutex> mutex;
     std::random_device rd;
     std::mt19937 e{rd()};
-    Vector2 playerPos;
 
     void SpawnBlowUpEnemies();
 

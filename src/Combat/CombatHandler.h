@@ -15,7 +15,6 @@ class CombatHandler {
 public:
     CombatHandler(std::shared_ptr<std::mutex>& mutex, GameData* gameData, PlayerData* playerData, EntityResolver* entityResolver);
     bool ProcessCombat(float deltaTime);
-    void DealDamage(AEntity* x, int amount);
 private:
     EntityResolver* entityResolver;
     GameData* gameData;
