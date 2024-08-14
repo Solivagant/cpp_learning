@@ -6,8 +6,6 @@
 #include <iostream>
 #include <sstream>
 
-void SpawnBlowUpEnemies(Vector2 position, std::vector<EnemyA*> enemies, EntityResolver* entityResolver);
-
 std::vector<EnemyA*> EntityResolver::GetEnemies() {
     return enemies;
 }
@@ -59,7 +57,6 @@ void EntityResolver::CleanEnemies() {
     enemies = newEnemies;
 }
 
-//TODO could be a template method?
 void EntityResolver::CleanProjectiles() {
     std::vector<Projectile*> newProjectiles;
 
@@ -72,7 +69,6 @@ void EntityResolver::CleanProjectiles() {
     }
 
     projectiles.clear();
-
     projectiles = newProjectiles;
 }
 

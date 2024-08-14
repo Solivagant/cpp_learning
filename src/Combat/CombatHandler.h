@@ -25,6 +25,8 @@ private:
     float currentTime = 0;
 
     std::map<AEntity*, std::map<Projectile*, char>> projectile_enemy_map;
+    void ProcessAbilities(float deltaTime, Player* player);
+    void GenerateProjectile(Vector2 targetPos, Vector2 playerPos, int angle);
 };
 
 #endif //CPP_LEARNING_COMBATHANDLER_H

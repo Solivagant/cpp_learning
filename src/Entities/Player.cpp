@@ -4,7 +4,6 @@
 
 #include "../../lib/raylib.h"
 #include "Player.h"
-#include "../../lib/raymath.h"
 #include <sstream>
 
 static const float maxHoldTime = 1.5;

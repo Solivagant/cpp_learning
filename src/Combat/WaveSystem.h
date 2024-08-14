@@ -7,6 +7,7 @@
 
 #include "../Entities/EntityResolver.h"
 #include "../Game/GameData.h"
+#include <map>
 
 class WaveSystem {
 public:
@@ -22,7 +23,19 @@ private:
     constexpr static const float deviation = 20.0f;
     constexpr static const int spawnSleepMs = 500;
     constexpr static const int spawnIntervalMs = 5000;
-    constexpr static const int enemyCountPerLevel = 10;
+
+    std::map<int, int> levelToEnemyCount {{1, 10},
+                                          {2, 20},
+                                          {3, 25},
+                                          {4, 30},
+                                          {5, 40},
+                                          {6, 60},
+                                          {7, 80},
+                                          {8, 100},
+                                          {9, 100},
+                                          {10, 100},
+
+    };
 
     EntityResolver* entityResolver;
     GameData* gameData;
@@ -35,5 +48,6 @@ private:
 
     void SpawnBlowUpEnemies();
 
+    int GetEnemyCountForLevel(int level);
 };
 #endif //CPP_LEARNING_WAVESYSTEM_H

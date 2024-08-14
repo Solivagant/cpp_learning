@@ -4,6 +4,7 @@
 
 #include "WaveSystem.h"
 #include "../Util/MathUtil.h"
+#include <algorithm>
 
 WaveSystem::WaveSystem(std::shared_ptr<std::mutex> &mutex, PlayerData* playerData, GameData* gameData,
                        EntityResolver* entityResolver) {
@@ -38,8 +39,9 @@ void WaveSystem::SpawnBlowUpEnemies() {
 
     for (auto enemy: enemies) {
         enemy->MarkDying(true);
-        std::this_thread::sleep_for(std::chrono::milliseconds(enemies.size() / 10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(std::clamp((int)(enemies.size() / 10), 1, 3)));
     }
+
     entityResolver->DeleteEnemies();
 }
 
@@ -51,7 +53,7 @@ void WaveSystem::SpawnGenerateEnemies() {
         std::unique_lock<std::mutex> lock(*mutex);
 
         if (!playerData->IsDead()) {
-            GenerateEnemies(enemyCountPerLevel * playerData->GetLevel());
+            GenerateEnemies(GetEnemyCountForLevel(playerData->GetLevel()));
             timePassed = 0;
         }
 
@@ -105,5 +107,11 @@ void WaveSystem::GenerateEnemies(int count) {
         basicEnemy = new EnemyA(randomPosRight);
         entityResolver->RegisterEnemy(basicEnemy);
     }
+}
+
+int WaveSystem::GetEnemyCountForLevel(int level) {
+    if(levelToEnemyCount.contains(level)) return levelToEnemyCount[level];
+
+    return levelToEnemyCount[levelToEnemyCount.size()-1];
 }
 
