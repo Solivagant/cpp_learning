@@ -5,9 +5,8 @@
 #include "CombatHandler.h"
 #include <iostream>
 
-CombatHandler::CombatHandler(std::shared_ptr<std::mutex> &mutex, GameData* gameData, PlayerData* playerData,
+CombatHandler::CombatHandler(std::shared_ptr<std::mutex> &mutex, PlayerData* playerData,
                              EntityResolver* entityResolver) {
-    this->gameData = gameData;
     this->playerData = playerData;
     this->entityResolver = entityResolver;
     this->mutex = mutex;

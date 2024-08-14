@@ -15,7 +15,7 @@ void ServiceLocator::Init() {
     playerData = new PlayerData();
     entityResolver = new EntityResolver();
 
-    combatHandler = new CombatHandler(mutex, gameData, playerData, entityResolver);
+    combatHandler = new CombatHandler(mutex, playerData, entityResolver);
     waveSystem = new WaveSystem(mutex, playerData, gameData, entityResolver);
     backgroundService = new BackgroundService();
 }

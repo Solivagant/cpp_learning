@@ -37,6 +37,8 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
+    int playerCurrentLevel = 1;
+
     // Main game loop
     while (!WindowShouldClose()) {
         // Update
@@ -54,7 +56,7 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
         BeginMode2D(camera);
         ClearBackground(BLACK);
 
-        background->Draw();
+        background->Draw(deltaTime);
 
         DrawEnemies(deltaTime);
         player->Draw();
@@ -63,9 +65,14 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
             combatHandler->ProcessCombat(deltaTime);
         }
 
-
         EndMode2D();
         EndDrawing();
+
+        if(playerData->GetLevel() > playerCurrentLevel)
+        {
+            playerCurrentLevel = playerData->GetLevel();
+            background->StartTransition();
+        }
     }
 
     gameData->SetIsRunning(false);
@@ -77,7 +84,6 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     entityResolver->Shutdown();
 
     FreeMemory();
-    // Close window and OpenGL context
     CloseWindow();
 
     return 0;
