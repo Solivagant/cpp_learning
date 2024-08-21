@@ -3,35 +3,30 @@
 //
 
 #include "EntityResolver.h"
-#include "../Util/EntityPool.h"
 #include <iostream>
-
-EntityResolver::EntityResolver(){
-}
 
 std::vector<std::shared_ptr<BasicEnemy>> EntityResolver::GetEnemies() {
     return enemies;
 }
 
-std::vector<Projectile*> EntityResolver::GetProjectiles() {
+std::vector<std::shared_ptr<Projectile>> EntityResolver::GetProjectiles() {
     return projectiles;
 }
 
-std::shared_ptr<BasicEnemy> EntityResolver::AcquireEnemy()
-{
-    return enemyPool.acquire();
+std::shared_ptr<BasicEnemy> EntityResolver::AcquireEnemy() {
+    auto enemy = enemyPool.acquire();
+    enemies.push_back(enemy);
+    return enemy;
 }
 
-void EntityResolver::RegisterEnemy(std::shared_ptr<BasicEnemy>  enemy) {
-    enemies.push_back(enemy);
+std::shared_ptr<Projectile> EntityResolver::AcquireProjectile() {
+    auto projectile = projectilePool.acquire();
+    projectiles.push_back(projectile);
+    return projectile;
 }
 
 void EntityResolver::RegisterPlayer(Player* player) {
     this->player = player;
-}
-
-void EntityResolver::RegisterProjectile(Projectile* projectile) {
-    projectiles.push_back(projectile);
 }
 
 Player* EntityResolver::GetPlayer() {
@@ -58,12 +53,10 @@ void EntityResolver::CleanEnemies() {
 }
 
 void EntityResolver::CleanProjectiles() {
-    std::vector<Projectile*> newProjectiles;
+    std::vector<std::shared_ptr<Projectile>> newProjectiles;
 
     for (auto projectile: projectiles) {
-        if (projectile->GetToDelete()) {
-            delete projectile;
-        } else {
+        if (!projectile->GetToDelete()) {
             newProjectiles.push_back(projectile);
         }
     }

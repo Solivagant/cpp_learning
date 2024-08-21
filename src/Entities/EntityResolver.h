@@ -15,26 +15,26 @@
 
 class EntityResolver {
 public:
-    EntityResolver();
     void RegisterPlayer(Player* player);
-    void RegisterEnemy(std::shared_ptr<BasicEnemy> enemy);
     Player* GetPlayer();
-    std::vector<std::shared_ptr<BasicEnemy> > GetEnemies();
-    std::vector<Projectile*> GetProjectiles();
+    std::vector<std::shared_ptr<BasicEnemy>> GetEnemies();
+    std::vector<std::shared_ptr<Projectile>> GetProjectiles();
     void DeleteEnemies();
     void CleanEnemies();
     void CleanProjectiles();
 
-    void RegisterProjectile(Projectile* projectile);
+    void RegisterProjectile(std::shared_ptr<Projectile> projectile);
     void FreeMemory();
 
     std::shared_ptr<BasicEnemy> AcquireEnemy();
+    std::shared_ptr<Projectile> AcquireProjectile();
 
 private:
     EntityPool<BasicEnemy> enemyPool = EntityPool<BasicEnemy>(100);
+    EntityPool<Projectile> projectilePool = EntityPool<Projectile>(100);
 
     std::vector<std::shared_ptr<BasicEnemy>> enemies;
-    std::vector<Projectile*> projectiles;
+    std::vector<std::shared_ptr<Projectile>> projectiles;
     Player* player;
     std::thread t1;
 };

@@ -147,7 +147,6 @@ void WaveSystem::CreateBasicEnemyA(Vector2 position) {
     };
     std::shared_ptr<BasicEnemy> basicEnemy = entityResolver->AcquireEnemy();
     basicEnemy->Init(position, 2, 15, 80,levelToSpeed, RED);
-    entityResolver->RegisterEnemy(basicEnemy);
 }
 
 void WaveSystem::CreateBasicEnemyB(Vector2 position) {
@@ -165,5 +164,4 @@ void WaveSystem::CreateBasicEnemyB(Vector2 position) {
 
     std::shared_ptr<BasicEnemy> basicEnemy = entityResolver->AcquireEnemy();
     basicEnemy->Init(position, 1, 10, 90,levelToSpeed, SKYBLUE);
-    entityResolver->RegisterEnemy(basicEnemy);
 }

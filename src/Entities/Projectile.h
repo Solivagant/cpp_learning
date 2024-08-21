@@ -6,6 +6,7 @@
 #define CPP_LEARNING_PROJECTILE_H
 
 #include "../../lib/raylib.h"
+#include "../../lib/raymath.h"
 
 class Projectile {
 public:
@@ -14,9 +15,9 @@ public:
     constexpr static const float InitialSpeed = 420.0f;
     constexpr static const float TimeToLive = 1.0f;
 
-    Projectile(Vector2 initialPosition, Vector2 targetPosition);
+    void Init(Vector2 initialPosition, Vector2 targetPosition);
     void Draw() ;
-    void Move(int playerLevel, float d);
+    void Move(float d);
     void MarkForDeletion();
     bool GetToDelete() { return toDelete; }
 

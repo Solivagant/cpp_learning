@@ -22,8 +22,8 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     bool enemyWasHit = false;
     bool projectileExpired = false;
 
-    for (Projectile* projectile: entityResolver->GetProjectiles()) {
-        projectile->Move(playerData->GetLevel(), deltaTime);
+    for (auto projectile: entityResolver->GetProjectiles()) {
+        projectile->Move(deltaTime);
         projectile->Draw();
 
         for (std::shared_ptr<BasicEnemy> enemy: entityResolver->GetEnemies()) {
@@ -49,7 +49,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
                     if (enemy->GetIsDying()) {
                         playerData->SetXP(playerData->GetXP() + 1);
                     }
-                    projectile_enemy_map[enemy] = std::map<Projectile*, char>();
+                    projectile_enemy_map[enemy] = std::map<std::shared_ptr<Projectile>, char>();
                     projectile_enemy_map[enemy][projectile] = ' ';
                 }
             }
@@ -64,6 +64,8 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
 
         if (projectile->GetToDelete()) {
             projectileExpired = true;
+            //We could loop through all enemies to find projectiles, but we're counting on those already hit
+            //enemies to die soon, so we can ignore it
         }
     }
 
@@ -129,8 +131,8 @@ void CombatHandler::GenerateProjectile(Vector2 targetPos, Vector2 playerPos, int
     if (playerData->GetLevel() >= 20) {
         targetPos = Vector2Rotate(targetPos, currentAngle + angle);
     }
-    auto* projectile = new Projectile(playerPos, Vector2Add(playerPos, targetPos));
-    entityResolver->RegisterProjectile(projectile);
+    auto projectile = entityResolver->AcquireProjectile();
+    projectile->Init(playerPos, Vector2Add(playerPos, targetPos));
 }
 
 
