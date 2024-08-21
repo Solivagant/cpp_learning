@@ -7,10 +7,9 @@
 
 #include "../../lib/raylib.h"
 
-class Projectile  {
+class Projectile {
 public:
     static const int Radius = 10;
-    static const int AvoidanceBonus = 5;
 
     constexpr static const float InitialSpeed = 420.0f;
     constexpr static const float TimeToLive = 1.0f;

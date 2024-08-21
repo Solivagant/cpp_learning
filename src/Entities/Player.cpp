@@ -24,8 +24,6 @@ Player::Player(PlayerData* playerData, GameData* gameData, Vector2 initialPositi
     this->gameData = gameData;
     position = initialPosition;
     speed = InitialSpeed;
-
-    texture = LoadTexture("assets/kb.png");
 }
 
 void Player::Move(float deltaTime) {
@@ -67,9 +65,7 @@ void Player::Move(float deltaTime) {
 void Player::Draw() {
     if (!playerData->IsDead()) {
         DrawCircleV(position, Radius, GREEN);
-    }
-    else
-    {
+    } else {
         DrawCircleV(position, Radius, BLACK);
     }
 
@@ -77,10 +73,10 @@ void Player::Draw() {
 }
 
 bool Player::Fire(float deltaTime) {
-    if(playerData->IsDead()) return false;
+    if (playerData->IsDead()) return false;
 
     timeToFire += deltaTime;
-    if (timeToFire * playerData->GetLevel() > timePerFire) {
+    if (timeToFire * std::clamp(playerData->GetLevel(), 1, 5) > timePerFire) {
         timeToFire = 0;
         return true;
     }
@@ -105,14 +101,28 @@ void Player::DrawUI() {
     auto string = stream.str();
     const char* levelChar = string.c_str();
 
-    Vector2 bottom = Vector2{position.x - gameData->GetScreenWidth() / 2, (float) position.y + gameData->GetScreenHeight() / 2 - 20};
-    Vector2 top = Vector2{position.x - gameData->GetScreenWidth() / 2, (float) position.y - gameData->GetScreenHeight() / 2};
+    Vector2 bottom = Vector2{0, (float) gameData->GetScreenHeight() - 20};
+    Vector2 top = Vector2{0, 0};
 
-    Vector2 topRightCorner = Vector2{position.x + gameData->GetScreenWidth() / 2 - 50, (float) position.y - gameData->GetScreenHeight() / 2};
+    Vector2 topRightCorner = Vector2{(float) gameData->GetScreenWidth() - 50, 0};
+
+    if (gameData->GetCameraFollowsPlayer()) {
+        bottom = Vector2{position.x - gameData->GetScreenWidth() / 2,
+                         (float) position.y + gameData->GetScreenHeight() / 2 - 20};
+        top = Vector2{position.x - gameData->GetScreenWidth() / 2,
+                      (float) position.y - gameData->GetScreenHeight() / 2};
+
+        topRightCorner = Vector2{position.x + gameData->GetScreenWidth() / 2 - 50,
+                                 (float) position.y - gameData->GetScreenHeight() / 2};
+    }
 
     DrawRectangleV(bottom, Vector2{(float) healthSegmentSize * (float) playerData->GetHealth(), 20}, GREEN);
     DrawRectangleV(top, Vector2{(float) xpSegmentSize * (float) playerData->GetXP(), 20}, ORANGE);
     DrawRectangleV(topRightCorner, Vector2{50, 20}, BLACK);
 
     DrawTextEx(GetFontDefault(), levelChar, topRightCorner, 20, 1, WHITE);
+}
+
+Vector2 Player::GetPosition() {
+    return position;
 }

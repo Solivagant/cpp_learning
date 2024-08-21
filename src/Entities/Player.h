@@ -6,14 +6,12 @@
 #define CPP_LEARNING_PLAYER_H
 
 #include "../../lib/raylib.h"
-#include "AEntity.h"
 #include "../Stats/PlayerData.h"
 #include "../Game/GameData.h"
 #include <thread>
 #include <chrono>
 
-// Inheritance is private by default, so specify public
-class Player : public AEntity {
+class Player {
 public:
     static const int Radius = 15;
     constexpr static const float InitialSpeed = 200.0f;
@@ -23,10 +21,13 @@ public:
     void Draw();
     bool Fire(float deltaTime);
     void Respawn();
-    void DealDamage(int amount) override;
+    void DealDamage(int amount);
+    Vector2 GetPosition();
 private:
     PlayerData* playerData;
     Vector2 initialPosition;
+    Vector2 position;
+    float speed;
     float timeMoveHeld;
     float timeToFire;
     bool IsInputRightHeld() const;
