@@ -16,8 +16,8 @@ public:
     Vector2 GetPosition();
 
 private:
-    int maxHealth = 10;
-    int health = 10;
+    int maxHealth = 25;
+    int health = 25;
 
     int xpPerLevel = 10;
     int xp = 0;
