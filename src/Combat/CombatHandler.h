@@ -26,6 +26,8 @@ private:
     std::map<std::shared_ptr<BasicEnemy>, std::map<std::shared_ptr<Projectile>, char>> projectile_enemy_map;
     void ProcessAbilities(float deltaTime, Player* player);
     void GenerateProjectile(Vector2 targetPos, Vector2 playerPos, int angle);
+
+    void DealDamageToEnemy(std::shared_ptr<BasicEnemy> enemy, std::shared_ptr<Projectile> projectile);
 };
 
 #endif //CPP_LEARNING_COMBATHANDLER_H

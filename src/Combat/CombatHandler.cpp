@@ -35,22 +35,15 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
             //They're hit if the distance between them is smaller than or equal to their added radii
             //The projectile_enemy_map helps keep track if a projectile has hit a player, so it doesn't deal double damage
             if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= enemy->GetRadius() + Projectile::Radius) {
+                enemyWasHit = true;
+
                 if (projectile_enemy_map.contains(enemy)) {
                     if (!projectile_enemy_map[enemy].contains(projectile)) {
-                        enemy->DealDamage(1);
-                        if (enemy->GetIsDying()) {
-                            playerData->SetXP(playerData->GetXP() + 1);
-                        }
-                        enemyWasHit = true;
-                        projectile_enemy_map[enemy][projectile] = ' ';
+                        DealDamageToEnemy(enemy, projectile);
                     }
                 } else {
-                    enemy->DealDamage(1);
-                    if (enemy->GetIsDying()) {
-                        playerData->SetXP(playerData->GetXP() + 1);
-                    }
                     projectile_enemy_map[enemy] = std::map<std::shared_ptr<Projectile>, char>();
-                    projectile_enemy_map[enemy][projectile] = ' ';
+                    DealDamageToEnemy(enemy, projectile);
                 }
             }
 
@@ -95,6 +88,14 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
     }
 
     return false;
+}
+
+void CombatHandler::DealDamageToEnemy(std::shared_ptr<BasicEnemy> enemy, std::shared_ptr<Projectile> projectile) {
+    enemy->DealDamage(1);
+    if (enemy->GetIsDying()) {
+        playerData->SetXP(playerData->GetXP() + 1);
+    }
+    projectile_enemy_map[enemy][projectile] = ' ';
 }
 
 void CombatHandler::ProcessAbilities(float deltaTime, Player* player) {
