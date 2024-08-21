@@ -33,8 +33,8 @@ void WaveSystem::SpawnBlowUpEnemies() {
     Vector2 playerPos = playerData->GetPosition();
 
     //Sort enemies by position closest to player
-    std::sort(enemies.begin(), enemies.end(), [&](AEntity* a, AEntity* b) {
-        return CompareByDistance<AEntity>(a, b, playerPos);
+    std::sort(enemies.begin(), enemies.end(), [&](std::shared_ptr<BasicEnemy> a, std::shared_ptr<BasicEnemy> b) {
+        return CompareByDistance(a, b, playerPos);
     });
 
     for (auto enemy: enemies) {
@@ -73,10 +73,18 @@ void WaveSystem::SpawnGenerateEnemies() {
 void WaveSystem::GenerateEnemies(int count) {
     Vector2 playerPos = playerData->GetPosition();
 
-    int up = playerPos.y - gameData->GetScreenHeight() / 2 - deviation * 2;
-    int down = playerPos.y + gameData->GetScreenHeight() / 2 + deviation * 2;
-    int left = playerPos.x - gameData->GetScreenWidth() / 2 - deviation * 2;
-    int right = playerPos.x + gameData->GetScreenWidth() / 2 + deviation * 2;
+    int up = 0 - deviation * 2;
+    int down =  gameData->GetScreenHeight() + deviation * 2;
+    int left =  0 - deviation * 2;
+    int right = gameData->GetScreenWidth() + deviation * 2;
+
+    if(gameData->GetCameraFollowsPlayer())
+    {
+         up = playerPos.y - gameData->GetScreenHeight() / 2 - deviation * 2;
+         down = playerPos.y + gameData->GetScreenHeight() / 2 + deviation * 2;
+         left = playerPos.x - gameData->GetScreenWidth() / 2 - deviation * 2;
+         right = playerPos.x + gameData->GetScreenWidth() / 2 + deviation * 2;
+    }
 
     auto upDist = std::uniform_int_distribution<int>(up - deviation, up);
     auto downDist = std::uniform_int_distribution<int>(down, down + deviation);
@@ -89,23 +97,33 @@ void WaveSystem::GenerateEnemies(int count) {
     for (int i = 0; i < count; ++i) {
         //Random position up the screen
         Vector2 randomPosAbove{float(leftRightDist(e)), float(upDist(e))};
-        auto* basicEnemy = new EnemyA(randomPosAbove);
-        entityResolver->RegisterEnemy(basicEnemy);
+        CreateBasicEnemyA(randomPosAbove);
 
         //Random position down the screen
         Vector2 randomPosBelow{float(leftRightDist(e)), float(downDist(e))};
-        basicEnemy = new EnemyA(randomPosBelow);
-        entityResolver->RegisterEnemy(basicEnemy);
+        CreateBasicEnemyA(randomPosBelow);
 
         //Random position to the left of the screen
         Vector2 randomPosLeft{float(leftDist(e)), float(upDownDist(e))};
-        basicEnemy = new EnemyA(randomPosLeft);
-        entityResolver->RegisterEnemy(basicEnemy);
+        CreateBasicEnemyA(randomPosLeft);
 
         //Random position to the right of the screen
         Vector2 randomPosRight{float(rightDist(e)), float(upDownDist(e))};
-        basicEnemy = new EnemyA(randomPosRight);
-        entityResolver->RegisterEnemy(basicEnemy);
+        CreateBasicEnemyA(randomPosRight);
+    }
+
+    for (int i = 0; i < count / 10; ++i) {
+        Vector2 randomPosAbove{float(leftRightDist(e)), float(upDist(e))};
+        CreateBasicEnemyB(randomPosAbove);
+
+        Vector2 randomPosBelow{float(leftRightDist(e)), float(downDist(e))};
+        CreateBasicEnemyB(randomPosBelow);
+
+        Vector2 randomPosLeft{float(leftDist(e)), float(upDownDist(e))};
+        CreateBasicEnemyB(randomPosLeft);
+
+        Vector2 randomPosRight{float(rightDist(e)), float(upDownDist(e))};
+        CreateBasicEnemyB(randomPosRight);
     }
 }
 
@@ -115,3 +133,37 @@ int WaveSystem::GetEnemyCountForLevel(int level) {
     return levelToEnemyCount[levelToEnemyCount.size()-1];
 }
 
+void WaveSystem::CreateBasicEnemyA(Vector2 position) {
+    std::map<int, int> levelToSpeed{{1,  5},
+                                    {2,  10},
+                                    {3,  15},
+                                    {4,  20},
+                                    {5,  25},
+                                    {6,  30},
+                                    {7,  35},
+                                    {8,  40},
+                                    {9,  50},
+                                    {10, 60},
+    };
+    std::shared_ptr<BasicEnemy> basicEnemy = entityResolver->AcquireEnemy();
+    basicEnemy->Init(position, 2, 15, 80,levelToSpeed, RED);
+    entityResolver->RegisterEnemy(basicEnemy);
+}
+
+void WaveSystem::CreateBasicEnemyB(Vector2 position) {
+
+    std::map<int, int> levelToSpeed{{1,  60},
+                                    {2,  70},
+                                    {3,  80},
+                                    {4,  90},
+                                    {5,  100},
+                                    {6,  110},
+                                    {7,  120},
+                                    {8,  130},
+                                    {9,  140},
+                                    {10, 1500}};
+
+    std::shared_ptr<BasicEnemy> basicEnemy = entityResolver->AcquireEnemy();
+    basicEnemy->Init(position, 1, 10, 90,levelToSpeed, SKYBLUE);
+    entityResolver->RegisterEnemy(basicEnemy);
+}

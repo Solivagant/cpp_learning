@@ -8,6 +8,7 @@
 #include "../Entities/EntityResolver.h"
 #include "../Game/GameData.h"
 #include <map>
+#include <random>
 
 class WaveSystem {
 public:
@@ -18,22 +19,24 @@ public:
     void SpawnGenerateEnemies();
     void GenerateEnemies(int count);
     void BlowUpEnemies();
+    void CreateBasicEnemyA(Vector2 position);
+    void CreateBasicEnemyB(Vector2 position);
 
 private:
     constexpr static const float deviation = 20.0f;
     constexpr static const int spawnSleepMs = 500;
     constexpr static const int spawnIntervalMs = 5000;
 
-    std::map<int, int> levelToEnemyCount {{1, 10},
+    std::map<int, int> levelToEnemyCount {{1, 15},
                                           {2, 20},
-                                          {3, 25},
-                                          {4, 30},
-                                          {5, 40},
-                                          {6, 60},
-                                          {7, 80},
-                                          {8, 100},
-                                          {9, 100},
-                                          {10, 100},
+                                          {3, 20},
+                                          {4, 20},
+                                          {5, 25},
+                                          {6, 30},
+                                          {7, 35},
+                                          {8, 40},
+                                          {9, 45},
+                                          {10, 50},
 
     };
 
