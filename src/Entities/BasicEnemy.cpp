@@ -3,8 +3,6 @@
 //
 
 #include "BasicEnemy.h"
-#include "../../lib/raymath.h"
-#include <sstream>
 
 BasicEnemy::BasicEnemy(){
     id = counter;
@@ -79,7 +77,6 @@ void BasicEnemy::MarkDying(bool isBlowingUp) {
     timeDying = 0;
     isDying = true;
     this->isBlowingUp = isBlowingUp;
-//    MarkForDeletion();
 }
 
 void BasicEnemy::MarkForDeletion() {

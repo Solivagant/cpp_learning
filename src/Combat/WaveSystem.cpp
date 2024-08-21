@@ -3,8 +3,6 @@
 //
 
 #include "WaveSystem.h"
-#include "../Util/MathUtil.h"
-#include <algorithm>
 
 WaveSystem::WaveSystem(std::shared_ptr<std::mutex> &mutex, PlayerData* playerData, GameData* gameData,
                        EntityResolver* entityResolver) {
@@ -133,6 +131,7 @@ int WaveSystem::GetEnemyCountForLevel(int level) {
     return levelToEnemyCount[levelToEnemyCount.size()-1];
 }
 
+//Config map so things can be tweaked without relying on a formula
 void WaveSystem::CreateBasicEnemyA(Vector2 position) {
     std::map<int, int> levelToSpeed{{1,  5},
                                     {2,  10},
@@ -144,6 +143,16 @@ void WaveSystem::CreateBasicEnemyA(Vector2 position) {
                                     {8,  40},
                                     {9,  50},
                                     {10, 60},
+                                    {11, 70},
+                                    {12, 80},
+                                    {13, 90},
+                                    {14, 100},
+                                    {15, 110},
+                                    {16, 120},
+                                    {17, 130},
+                                    {18, 135},
+                                    {19, 140},
+                                    {20, 150},
     };
     std::shared_ptr<BasicEnemy> basicEnemy = entityResolver->AcquireEnemy();
     basicEnemy->Init(position, 2, 15, 80,levelToSpeed, RED);

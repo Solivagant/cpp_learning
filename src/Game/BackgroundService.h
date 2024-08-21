@@ -5,7 +5,6 @@
 #ifndef CPP_LEARNING_BACKGROUNDSERVICE_H
 #define CPP_LEARNING_BACKGROUNDSERVICE_H
 #include "../../lib/raylib.h"
-#include "../Util/MathUtil.h"
 #include "../Stats/PlayerData.h"
 #include "GameData.h"
 #include <map>

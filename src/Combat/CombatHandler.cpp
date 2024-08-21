@@ -3,7 +3,6 @@
 //
 
 #include "CombatHandler.h"
-#include <iostream>
 
 CombatHandler::CombatHandler(std::shared_ptr<std::mutex> &mutex, PlayerData* playerData,
                              EntityResolver* entityResolver) {
@@ -26,7 +25,7 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
         projectile->Move(deltaTime);
         projectile->Draw();
 
-        for (std::shared_ptr<BasicEnemy> enemy: entityResolver->GetEnemies()) {
+        for (auto enemy: entityResolver->GetEnemies()) {
             if (enemy->GetIsDying()) continue;
 
             Vector2 enemyPosition = enemy->GetPosition();
@@ -53,29 +52,25 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
                 enemyWasHit = true;
                 projectile_enemy_map.erase(enemy);
             }
+
+            if (!enemy->GetIsDying() && Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <=
+                                        enemy->GetRadius() + Player::Radius) {
+                //Player hit
+                player->DealDamage(1);
+
+                //Kill enemy as well
+                enemy->KillFromHittingPlayer();
+                enemyWasHit = true;
+                if (playerData->IsDead()) {
+                    return true;
+                }
+            }
         };
 
         if (projectile->GetToDelete()) {
             projectileExpired = true;
             //We could loop through all enemies to find projectiles, but we're counting on those already hit
             //enemies to die soon, so we can ignore it
-        }
-    }
-
-    for (std::shared_ptr<BasicEnemy> enemy: entityResolver->GetEnemies()) {
-        Vector2 enemyPosition = enemy->GetPosition();
-
-        if (!enemy->GetIsDying() && Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <=
-                                    enemy->GetRadius() + Player::Radius) {
-            //Player hit
-            player->DealDamage(1);
-
-            //Kill enemy as well
-            enemy->KillFromHittingPlayer();
-            enemyWasHit = true;
-            if (playerData->IsDead()) {
-                return true;
-            }
         }
     }
 
@@ -122,6 +117,7 @@ void CombatHandler::ProcessAbilities(float deltaTime, Player* player) {
             GenerateProjectile(Vector2{10, 0}, playerPos, 90);
         }
 
+        //Projectile Left
         if (playerData->GetLevel() >= 15) {
             GenerateProjectile(Vector2{-10, 0}, playerPos, 270);
         }

@@ -5,10 +5,10 @@
 #ifndef CPP_LEARNING_SERVICELOCATOR_H
 #define CPP_LEARNING_SERVICELOCATOR_H
 
-#include "Combat/CombatHandler.h"
-#include "Combat/WaveSystem.h"
-#include "Game/GameData.h"
-#include "Game/BackgroundService.h"
+#include "../Combat/CombatHandler.h"
+#include "../Combat/WaveSystem.h"
+#include "GameData.h"
+#include "BackgroundService.h"
 #include <map>
 #include <thread>
 #include <mutex>

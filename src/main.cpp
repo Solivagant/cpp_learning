@@ -1,7 +1,7 @@
 #include "Game/GameLoop.h"
 #include "Game/GameData.h"
 #include "Combat/CombatHandler.h"
-#include "ServiceLocator.h"
+#include "Game/ServiceLocator.h"
 
 int main() {
 

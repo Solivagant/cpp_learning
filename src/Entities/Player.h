@@ -10,6 +10,7 @@
 #include "../Game/GameData.h"
 #include <thread>
 #include <chrono>
+#include <sstream>
 
 class Player {
 public:
@@ -17,6 +18,7 @@ public:
     constexpr static const float InitialSpeed = 200.0f;
 
     Player(PlayerData* playerData, GameData* gameData, Vector2 initialPosition);
+    void UpdateLevelStream();
     void Move(float deltaTime);
     void Draw();
     bool Fire(float deltaTime);
@@ -30,13 +32,14 @@ private:
     float speed;
     float timeMoveHeld;
     float timeToFire;
+    int playerLevelCache;
     bool IsInputRightHeld() const;
     bool IsInputLeftHeld() const;
     bool IsInputUpHeld() const;
     bool IsInputDownHeld() const;
     GameData* gameData;
-    Texture texture;
     void DrawUI();
+    std::vector<char>*  levelString;
 };
 
 #endif //CPP_LEARNING_PLAYER_H

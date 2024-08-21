@@ -12,6 +12,7 @@
 #include "../../lib/raylib.h"
 #include "../../lib/raymath.h"
 #include "../Util/EntityPool.h"
+#include <iostream>
 
 class EntityResolver {
 public:

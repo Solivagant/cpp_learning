@@ -6,6 +6,8 @@
 #define CPP_LEARNING_BASICENEMY_H
 
 #include "Player.h"
+#include "../../lib/raymath.h"
+#include <sstream>
 #include <map>
 
 static int counter;
@@ -40,7 +42,6 @@ private:
     int maxHealth;
     int radius;
     int initialSpeed;
-    float speed;
     Color color;
 
     Vector2 position;

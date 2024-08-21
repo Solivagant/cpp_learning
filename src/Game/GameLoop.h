@@ -9,7 +9,7 @@
 #include "../../lib/raymath.h"
 #include "../Entities/EntityResolver.h"
 #include "BackgroundService.h"
-#include "../ServiceLocator.h"
+#include "ServiceLocator.h"
 #include <thread>
 #include <chrono>
 

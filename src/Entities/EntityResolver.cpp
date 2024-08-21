@@ -3,7 +3,6 @@
 //
 
 #include "EntityResolver.h"
-#include <iostream>
 
 std::vector<std::shared_ptr<BasicEnemy>> EntityResolver::GetEnemies() {
     return enemies;

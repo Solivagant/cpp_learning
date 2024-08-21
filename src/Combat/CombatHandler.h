@@ -10,6 +10,7 @@
 #include <map>
 #include <thread>
 #include <mutex>
+#include <iostream>
 
 class CombatHandler {
 public:

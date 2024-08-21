@@ -8,8 +8,6 @@ add_executable(cpp_learning src/main.cpp
         lib/raymath.h
         src/Game/GameLoop.cpp
         src/Game/GameLoop.h
-        src/Util/MathUtil.cpp
-        src/Util/MathUtil.h
         src/Entities/Player.cpp
         src/Entities/Player.h
         src/Entities/BasicEnemy.cpp
@@ -28,8 +26,8 @@ add_executable(cpp_learning src/main.cpp
         src/Combat/WaveSystem.h
         src/Combat/CombatHandler.cpp
         src/Combat/CombatHandler.h
-        src/ServiceLocator.cpp
-        src/ServiceLocator.h
+        src/Game/ServiceLocator.cpp
+        src/Game/ServiceLocator.h
         src/Util/EntityPool.h
 )
 

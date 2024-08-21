@@ -2,9 +2,7 @@
 // Created by Geraldo Nascimento on 05/08/2024.
 //
 
-#include "../../lib/raylib.h"
 #include "Player.h"
-#include <sstream>
 
 static const float maxHoldTime = 1.5;
 static const float speedBoost = 1.0f;
@@ -24,6 +22,8 @@ Player::Player(PlayerData* playerData, GameData* gameData, Vector2 initialPositi
     this->gameData = gameData;
     position = initialPosition;
     speed = InitialSpeed;
+
+    UpdateLevelStream();
 }
 
 void Player::Move(float deltaTime) {
@@ -63,6 +63,10 @@ void Player::Move(float deltaTime) {
 }
 
 void Player::Draw() {
+    if(playerData->GetLevel() > playerLevelCache) {
+        UpdateLevelStream();
+    }
+
     if (!playerData->IsDead()) {
         DrawCircleV(position, Radius, GREEN);
     } else {
@@ -70,6 +74,20 @@ void Player::Draw() {
     }
 
     DrawUI();
+}
+
+void Player::UpdateLevelStream(){
+    playerLevelCache = playerData->GetLevel();
+
+    std::stringstream stream;
+    if(playerLevelCache < 10)
+    {
+        stream << " ";
+    }
+    stream << playerData->GetLevel();
+
+    std::string test = stream.str();
+    levelString = new std::vector<char>(begin(test), end(test));
 }
 
 bool Player::Fire(float deltaTime) {
@@ -86,6 +104,7 @@ bool Player::Fire(float deltaTime) {
 void Player::Respawn() {
     position = initialPosition;
     playerData->SetHealth(playerData->GetMaxHealth());
+    UpdateLevelStream();
 }
 
 void Player::DealDamage(int amount) {
@@ -96,15 +115,10 @@ void Player::DrawUI() {
     float healthSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetMaxHealth();
     float xpSegmentSize = (float) gameData->GetScreenWidth() / playerData->GetXPToNextLevel();
 
-    std::stringstream stream;
-    stream << playerData->GetLevel();
-    auto string = stream.str();
-    const char* levelChar = string.c_str();
-
     Vector2 bottom = Vector2{0, (float) gameData->GetScreenHeight() - 20};
     Vector2 top = Vector2{0, 0};
 
-    Vector2 topRightCorner = Vector2{(float) gameData->GetScreenWidth() - 50, 0};
+    Vector2 topRightCorner = Vector2{(float) gameData->GetScreenWidth() - 20, 0};
 
     if (gameData->GetCameraFollowsPlayer()) {
         bottom = Vector2{position.x - gameData->GetScreenWidth() / 2,
@@ -112,15 +126,15 @@ void Player::DrawUI() {
         top = Vector2{position.x - gameData->GetScreenWidth() / 2,
                       (float) position.y - gameData->GetScreenHeight() / 2};
 
-        topRightCorner = Vector2{position.x + gameData->GetScreenWidth() / 2 - 50,
+        topRightCorner = Vector2{position.x + gameData->GetScreenWidth() / 2 - 20,
                                  (float) position.y - gameData->GetScreenHeight() / 2};
     }
 
     DrawRectangleV(bottom, Vector2{(float) healthSegmentSize * (float) playerData->GetHealth(), 20}, GREEN);
     DrawRectangleV(top, Vector2{(float) xpSegmentSize * (float) playerData->GetXP(), 20}, ORANGE);
-    DrawRectangleV(topRightCorner, Vector2{50, 20}, BLACK);
+    DrawRectangleV(topRightCorner, Vector2{20, 20}, DARKPURPLE);
 
-    DrawTextEx(GetFontDefault(), levelChar, topRightCorner, 20, 1, WHITE);
+    DrawTextEx(GetFontDefault(), levelString->data(), topRightCorner, 20, 1, WHITE);
 }
 
 Vector2 Player::GetPosition() {
