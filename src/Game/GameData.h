@@ -11,13 +11,13 @@ public:
     int GetScreenWidth() const;
     int GetScreenHeight() const;
     bool GetIsRunning();
-private:
-public:
     void SetIsRunning(bool isRunning);
+    bool GetCameraFollowsPlayer();
 private:
     bool isRunning;
     int screenWidth;
     int screenHeight;
+    bool cameraFollowsPlayer = true;
 };
 
 #endif //CPP_LEARNING_GAMEDATA_H

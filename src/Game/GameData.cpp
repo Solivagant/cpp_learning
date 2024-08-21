@@ -24,3 +24,8 @@ bool GameData::GetIsRunning() {
 void GameData::SetIsRunning(bool isRunning) {
     GameData::isRunning = isRunning;
 }
+
+bool GameData::GetCameraFollowsPlayer()
+{
+    return cameraFollowsPlayer;
+}
