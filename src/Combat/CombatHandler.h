@@ -23,7 +23,7 @@ private:
     float currentAngle = 0;
     float currentTime = 0;
 
-    std::map<AEntity*, std::map<Projectile*, char>> projectile_enemy_map;
+    std::map<std::shared_ptr<BasicEnemy>, std::map<Projectile*, char>> projectile_enemy_map;
     void ProcessAbilities(float deltaTime, Player* player);
     void GenerateProjectile(Vector2 targetPos, Vector2 playerPos, int angle);
 };

@@ -2,9 +2,6 @@
 // Created by Geraldo Nascimento on 05/08/2024.
 // Using raylib
 // https://www.raylib.com/cheatsheet/cheatsheet.html
-#include <iostream>
-#include <cstdlib>
-
 #include "GameLoop.h"
 
 int GameLoop::RunGame(ServiceLocator* serviceLocator) {
@@ -23,8 +20,7 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
     InitWindow(width, height, ".SURVIVORS");
     SetTargetFPS(60);
 
-    entityResolver->InitRand(width, height);
-    background->Init(width, height, playerData);
+    background->Init(width, height, playerData, gameData);
 
     player = RegisterPlayer();
     waveSystem->StartWave();
@@ -39,6 +35,8 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
 
     int playerCurrentLevel = 1;
 
+    counter = 0;
+
     // Main game loop
     while (!WindowShouldClose()) {
         // Update
@@ -50,7 +48,10 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
             MoveEnemies(deltaTime);
         }
 
-        camera.target = player->GetPosition();
+        if(gameData->GetCameraFollowsPlayer())
+        {
+            camera.target = player->GetPosition();
+        }
 
         BeginDrawing();
         BeginMode2D(camera);
@@ -73,6 +74,12 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
             playerCurrentLevel = playerData->GetLevel();
             background->StartTransition();
         }
+        else if(playerData->GetLevel() < playerCurrentLevel)
+        {
+            playerCurrentLevel = playerData->GetLevel();
+            background->Restart();
+        }
+
     }
 
     gameData->SetIsRunning(false);
@@ -81,7 +88,6 @@ int GameLoop::RunGame(ServiceLocator* serviceLocator) {
         t1.join();
     }
     waveSystem->Shutdown();
-    entityResolver->Shutdown();
 
     FreeMemory();
     CloseWindow();
@@ -101,13 +107,13 @@ void GameLoop::MoveEnemies(float deltaTime) {
     if (playerData->IsDead()) return;
 
     auto enemies = entityResolver->GetEnemies();
-    for (EnemyA* enemy: enemies) {
+    for (std::shared_ptr<BasicEnemy> enemy: enemies) {
         enemy->Move(playerData->GetLevel(), deltaTime, player, enemies);
     }
 }
 
 void GameLoop::DrawEnemies(float deltaTime) {
-    for (EnemyA* enemy: entityResolver->GetEnemies()) {
+    for (std::shared_ptr<BasicEnemy> enemy: entityResolver->GetEnemies()) {
         enemy->Draw(deltaTime);
     }
 }

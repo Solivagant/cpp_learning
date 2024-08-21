@@ -26,14 +26,15 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
         projectile->Move(playerData->GetLevel(), deltaTime);
         projectile->Draw();
 
-        for (EnemyA* enemy: entityResolver->GetEnemies()) {
+        for (std::shared_ptr<BasicEnemy> enemy: entityResolver->GetEnemies()) {
             if (enemy->GetIsDying()) continue;
 
             Vector2 enemyPosition = enemy->GetPosition();
 
             //Delete hit enemies
             //They're hit if the distance between them is smaller than or equal to their added radii
-            if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= EnemyA::Radius + Projectile::Radius) {
+            //The projectile_enemy_map helps keep track if a projectile has hit a player, so it doesn't deal double damage
+            if (Vector2Distance(enemyPosition, projectile->GetPosition()) <= enemy->GetRadius() + Projectile::Radius) {
                 if (projectile_enemy_map.contains(enemy)) {
                     if (!projectile_enemy_map[enemy].contains(projectile)) {
                         enemy->DealDamage(1);
@@ -53,8 +54,11 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
                 }
             }
 
-            if (enemy->GetToDelete()) {
+            //We have to erase the entry in the map for the enemy when its dead, otherwise it will hold on to the smart pointer
+            //and never clean it when it dies, leading to the enemy object pool to keep increasing infinitely.
+            if (enemy->GetIsDying() || enemy->GetToDelete()) {
                 enemyWasHit = true;
+                projectile_enemy_map.erase(enemy);
             }
         };
 
@@ -63,11 +67,11 @@ bool CombatHandler::ProcessCombat(float deltaTime) {
         }
     }
 
-    for (EnemyA* enemy: entityResolver->GetEnemies()) {
+    for (std::shared_ptr<BasicEnemy> enemy: entityResolver->GetEnemies()) {
         Vector2 enemyPosition = enemy->GetPosition();
 
         if (!enemy->GetIsDying() && Vector2Distance(enemyPosition, entityResolver->GetPlayer()->GetPosition()) <=
-                                    EnemyA::Radius + Player::Radius) {
+                                    enemy->GetRadius() + Player::Radius) {
             //Player hit
             player->DealDamage(1);
 
@@ -106,23 +110,23 @@ void CombatHandler::ProcessAbilities(float deltaTime, Player* player) {
         GenerateProjectile(Vector2{0, -10}, playerPos, 0);
 
         //Projectile Up
-        if (playerData->GetLevel() > 5) {
+        if (playerData->GetLevel() >= 5) {
             GenerateProjectile(Vector2{0, 10}, playerPos, 180);
         }
 
         //Projectile Right
-        if (playerData->GetLevel() > 10) {
+        if (playerData->GetLevel() >= 10) {
             GenerateProjectile(Vector2{10, 0}, playerPos, 90);
         }
 
-        if (playerData->GetLevel() > 15) {
+        if (playerData->GetLevel() >= 15) {
             GenerateProjectile(Vector2{-10, 0}, playerPos, 270);
         }
     }
 }
 
 void CombatHandler::GenerateProjectile(Vector2 targetPos, Vector2 playerPos, int angle) {
-    if (playerData->GetLevel() > 20) {
+    if (playerData->GetLevel() >= 20) {
         targetPos = Vector2Rotate(targetPos, currentAngle + angle);
     }
     auto* projectile = new Projectile(playerPos, Vector2Add(playerPos, targetPos));
