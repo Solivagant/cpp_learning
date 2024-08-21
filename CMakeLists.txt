@@ -12,9 +12,8 @@ add_executable(cpp_learning src/main.cpp
         src/Util/MathUtil.h
         src/Entities/Player.cpp
         src/Entities/Player.h
-        src/Entities/AEntity.h
-        src/Entities/Enemies/EnemyA.cpp
-        src/Entities/Enemies/EnemyA.h
+        src/Entities/BasicEnemy.cpp
+        src/Entities/BasicEnemy.h
         src/Entities/EntityResolver.cpp
         src/Entities/EntityResolver.h
         src/Entities/Projectile.cpp
@@ -25,14 +24,13 @@ add_executable(cpp_learning src/main.cpp
         src/Stats/PlayerData.h
         src/Game/GameData.cpp
         src/Game/GameData.h
-        src/Entities/Enemies/EnemyB.cpp
-        src/Entities/Enemies/EnemyB.h
         src/Combat/WaveSystem.cpp
         src/Combat/WaveSystem.h
         src/Combat/CombatHandler.cpp
         src/Combat/CombatHandler.h
         src/ServiceLocator.cpp
         src/ServiceLocator.h
+        src/Util/EntityPool.h
 )
 
 # Only Tested on Mac, correct way would conditionally link to the Windows equivalents, if on Windows
