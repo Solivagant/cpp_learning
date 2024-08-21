@@ -3,10 +3,13 @@
 //
 
 #include "EntityResolver.h"
+#include "../Util/EntityPool.h"
 #include <iostream>
-#include <sstream>
 
-std::vector<EnemyA*> EntityResolver::GetEnemies() {
+EntityResolver::EntityResolver(){
+}
+
+std::vector<std::shared_ptr<BasicEnemy>> EntityResolver::GetEnemies() {
     return enemies;
 }
 
@@ -14,7 +17,12 @@ std::vector<Projectile*> EntityResolver::GetProjectiles() {
     return projectiles;
 }
 
-void EntityResolver::RegisterEnemy(EnemyA* enemy) {
+std::shared_ptr<BasicEnemy> EntityResolver::AcquireEnemy()
+{
+    return enemyPool.acquire();
+}
+
+void EntityResolver::RegisterEnemy(std::shared_ptr<BasicEnemy>  enemy) {
     enemies.push_back(enemy);
 }
 
@@ -31,23 +39,15 @@ Player* EntityResolver::GetPlayer() {
 }
 
 void EntityResolver::DeleteEnemies() {
-    for (auto enemy: enemies) {
-        delete enemy;
-    }
-
-    //alternative to calling .clear(): swap with the contents of an empty vector
-    std::vector<EnemyA*>().swap(enemies);
-    std::vector<EnemyA*> newEnemies;
-    enemies = newEnemies;
+    enemies.clear();
 }
 
 void EntityResolver::CleanEnemies() {
-    std::vector<EnemyA*> newEnemies;
+    std::vector<std::shared_ptr<BasicEnemy>> newEnemies;
+    newEnemies.clear();
 
     for (auto enemy: enemies) {
-        if (enemy->GetToDelete()) {
-            delete enemy;
-        } else {
+        if (!enemy->GetToDelete()) {
             newEnemies.push_back(enemy);
         }
     }
@@ -78,10 +78,3 @@ void EntityResolver::FreeMemory() {
     DeleteEnemies();
 }
 
-void EntityResolver::InitRand(int screenWidth, int screenHeight) {
-    this->screenWidth = screenWidth;
-    this->screenHeight = screenHeight;
-}
-
-void EntityResolver::Shutdown() {
-}

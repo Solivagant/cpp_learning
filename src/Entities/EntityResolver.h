@@ -5,38 +5,37 @@
 #ifndef CPP_LEARNING_ENTITYRESOLVER_H
 #define CPP_LEARNING_ENTITYRESOLVER_H
 
-#include <random>
 #include <vector>
 #include "Player.h"
-#include "Enemies/EnemyA.h"
+#include "BasicEnemy.h"
 #include "Projectile.h"
 #include "../../lib/raylib.h"
 #include "../../lib/raymath.h"
-
-// Forward declaration of EnemyA
+#include "../Util/EntityPool.h"
 
 class EntityResolver {
 public:
+    EntityResolver();
     void RegisterPlayer(Player* player);
-    void RegisterEnemy(EnemyA* enemy);
+    void RegisterEnemy(std::shared_ptr<BasicEnemy> enemy);
     Player* GetPlayer();
-    std::vector<EnemyA*> GetEnemies();
+    std::vector<std::shared_ptr<BasicEnemy> > GetEnemies();
     std::vector<Projectile*> GetProjectiles();
     void DeleteEnemies();
     void CleanEnemies();
     void CleanProjectiles();
 
-    void DeletePlayer();
     void RegisterProjectile(Projectile* projectile);
     void FreeMemory();
-    void InitRand(int screenWidth, int screenHeight);
-    void Shutdown();
+
+    std::shared_ptr<BasicEnemy> AcquireEnemy();
+
 private:
-    std::vector<EnemyA*> enemies;
+    EntityPool<BasicEnemy> enemyPool = EntityPool<BasicEnemy>(100);
+
+    std::vector<std::shared_ptr<BasicEnemy>> enemies;
     std::vector<Projectile*> projectiles;
     Player* player;
-    int screenWidth;
-    int screenHeight;
     std::thread t1;
 };
 

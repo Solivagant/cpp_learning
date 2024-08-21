@@ -161,7 +161,7 @@ void WaveSystem::CreateBasicEnemyB(Vector2 position) {
                                     {7,  120},
                                     {8,  130},
                                     {9,  140},
-                                    {10, 1500}};
+                                    {10, 150}};
 
     std::shared_ptr<BasicEnemy> basicEnemy = entityResolver->AcquireEnemy();
     basicEnemy->Init(position, 1, 10, 90,levelToSpeed, SKYBLUE);

@@ -24,7 +24,7 @@ public:
 
 private:
     constexpr static const float deviation = 20.0f;
-    constexpr static const int spawnSleepMs = 500;
+    constexpr static const int spawnSleepMs = 2000;
     constexpr static const int spawnIntervalMs = 5000;
 
     std::map<int, int> levelToEnemyCount {{1, 15},
